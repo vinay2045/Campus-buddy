@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note Sharing - Campus Buddy</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+        rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+        .form-container {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #1F2937;
+            color: #ffffff;
+        }
+        
+        .btn-secondary {
+            background-color: #6B7280;
+            color: #ffffff;
+        }
+        
+        .btn-danger {
+            background-color: #DC2626;
+            color: #ffffff;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .note-card {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            position: relative;
+        }
+        
+        .note-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .note-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .note-actions button:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6B7280;
+        }
+        
+        .subject-tag {
+            background-color: #F3F4F6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        
+        .search-filter input,
+        .search-filter select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+        }
+        
+        .close:hover {
+            color: #1F2937;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <div class="p1">
+                <h2 class="appname">Campus Buddy</h2>
+            </div>
+            <div class="p2">
+                <a href="index.html"><span><i class="ri-home-2-line"></i> Dashboard</span></a>
+                <a href="note.html"><span><i class="ri-booklet-fill"></i> Note Sharing</span></a>
+                <a href="assign.html"><span><i class="ri-calendar-todo-fill"></i> AssignmentTracker</span></a>
+                <a href="peer.html"><span><i class="ri-team-line"></i> Peer Connect</span></a>
+                <a href="mentorship.html"><span><i class="ri-graduation-cap-fill"></i> Mentorship</span></a>
+                <a href="jobs.html"><span><i class="ri-terminal-line"></i> Jobs& Internships</span></a>
+            </div>
+            <div class="p3">
+                <p>@ 2025 Campus Buddy</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="p1">
+                <h3>Note Sharing</h3>
+                <button class="btn btn-primary" onclick="showCreateForm()">
+                    <i class="ri-add-line"></i> Create New Note
+                </button>
+            </div>
+
+            <!-- Create/Edit Form -->
+            <div class="form-container" id="noteForm">
+                <h4 id="formTitle">Create New Note</h4>
+                <form id="noteFormElement">
+                    <div class="form-group">
+                        <label for="noteTitle">Title</label>
+                        <input type="text" id="noteTitle" name="title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noteSubject">Subject</label>
+                        <select id="noteSubject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="Data Structures">Data Structures</option>
+                            <option value="Algorithms">Algorithms</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Database Systems">Database Systems</option>
+                            <option value="Operating Systems">Operating Systems</option>
+                            <option value="Computer Networks">Computer Networks</option>
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Machine Learning">Machine Learning</option>
+                            <option value="Linear Algebra">Linear Algebra</option>
+                            <option value="Calculus">Calculus</option>
+                            <option value="Statistics">Statistics</option>
+                            <option value="Physics">Physics</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noteDescription">Description</label>
+                        <textarea id="noteDescription" name="description" placeholder="Brief description of the note content..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noteContent">Content</label>
+                        <textarea id="noteContent" name="content" placeholder="Enter your note content here..." required style="min-height: 200px;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noteType">Note Type</label>
+                        <select id="noteType" name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="Study Guide">Study Guide</option>
+                            <option value="Lecture Notes">Lecture Notes</option>
+                            <option value="Quick Reference">Quick Reference</option>
+                            <option value="Practice Problems">Practice Problems</option>
+                            <option value="Project Notes">Project Notes</option>
+                            <option value="Exam Preparation">Exam Preparation</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noteVisibility">Visibility</label>
+                        <select id="noteVisibility" name="visibility" required>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                            <option value="friends">Friends Only</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Note</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="Search notes..." onkeyup="filterNotes()">
+                <select id="subjectFilter" onchange="filterNotes()">
+                    <option value="">All Subjects</option>
+                    <option value="Data Structures">Data Structures</option>
+                    <option value="Algorithms">Algorithms</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Database Systems">Database Systems</option>
+                    <option value="Operating Systems">Operating Systems</option>
+                    <option value="Computer Networks">Computer Networks</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Machine Learning">Machine Learning</option>
+                    <option value="Linear Algebra">Linear Algebra</option>
+                    <option value="Calculus">Calculus</option>
+                    <option value="Statistics">Statistics</option>
+                    <option value="Physics">Physics</option>
+                </select>
+                <select id="typeFilter" onchange="filterNotes()">
+                    <option value="">All Types</option>
+                    <option value="Study Guide">Study Guide</option>
+                    <option value="Lecture Notes">Lecture Notes</option>
+                    <option value="Quick Reference">Quick Reference</option>
+                    <option value="Practice Problems">Practice Problems</option>
+                    <option value="Project Notes">Project Notes</option>
+                    <option value="Exam Preparation">Exam Preparation</option>
+                </select>
+            </div>
+
+            <!-- Notes Display -->
+            <div class="notes-grid" id="notesContainer">
+                <!-- Notes will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- View Note Modal -->
+    <div class="modal" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalTitle"></h4>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data storage
+        let notes = [
+            {
+                id: 1,
+                title: "DSA - Linked List",
+                subject: "Data Structures",
+                description: "Concise pointers and visuals for Linked List implementation, traversal and common operations.",
+                content: "# Linked List Implementation\n\n## Basic Structure\n```\nclass Node {\n    constructor(data) {\n        this.data = data;\n        this.next = null;\n    }\n}\n```\n\n## Operations\n1. Insertion at beginning\n2. Insertion at end\n3. Deletion\n4. Traversal\n5. Search",
+                type: "Study Guide",
+                visibility: "public",
+                author: "Vinay Sriramoju",
+                date: "2025-07-07",
+                likes: 24,
+                downloads: 89
+            },
+            {
+                id: 2,
+                title: "Linear Algebra Matrices",
+                subject: "Linear Algebra",
+                description: "Complete matrix operations with examples and practice problems for the midterm exam.",
+                content: "# Matrix Operations\n\n## Addition and Subtraction\n- Matrices must have same dimensions\n- Add/subtract corresponding elements\n\n## Multiplication\n- Number of columns in first matrix = number of rows in second matrix\n- Result dimensions: (m×n) × (n×p) = (m×p)\n\n## Practice Problems\n1. Matrix multiplication examples\n2. Determinant calculations\n3. Inverse matrix problems",
+                type: "Exam Preparation",
+                visibility: "public",
+                author: "Ankitha",
+                date: "2025-07-06",
+                likes: 18,
+                downloads: 45
+            },
+            {
+                id: 3,
+                title: "React Hooks Guide",
+                subject: "Web Development",
+                description: "React hooks explained with practical examples and best practices for state management.",
+                content: "# React Hooks\n\n## useState\n```jsx\nconst [state, setState] = useState(initialValue);\n```\n\n## useEffect\n```jsx\nuseEffect(() => {\n    // Side effect code\n    return () => {\n        // Cleanup code\n    };\n}, [dependencies]);\n```\n\n## Custom Hooks\n- Extract component logic into reusable functions\n- Must start with 'use'\n- Can call other hooks",
+                type: "Study Guide",
+                visibility: "public",
+                author: "Vinay Sriramoju",
+                date: "2025-07-05",
+                likes: 32,
+                downloads: 67
+            },
+            {
+                id: 4,
+                title: "Database Normalization",
+                subject: "Database Systems",
+                description: "Complete guide to database normalization forms with examples and practice exercises.",
+                content: "# Database Normalization\n\n## First Normal Form (1NF)\n- Eliminate repeating groups\n- Each cell contains single value\n- Each record is unique\n\n## Second Normal Form (2NF)\n- Must be in 1NF\n- Eliminate partial dependencies\n- Non-key attributes fully dependent on primary key\n\n## Third Normal Form (3NF)\n- Must be in 2NF\n- Eliminate transitive dependencies\n- Non-key attributes not dependent on other non-key attributes",
+                type: "Lecture Notes",
+                visibility: "public",
+                author: "Priya Sharma",
+                date: "2025-07-04",
+                likes: 15,
+                downloads: 38
+            },
+            {
+                id: 5,
+                title: "Operating System Scheduling",
+                subject: "Operating Systems",
+                description: "CPU scheduling algorithms comparison with examples and implementation details.",
+                content: "# CPU Scheduling Algorithms\n\n## First Come First Serve (FCFS)\n- Non-preemptive\n- Simple to implement\n- Can cause convoy effect\n\n## Shortest Job First (SJF)\n- Can be preemptive or non-preemptive\n- Optimal for average waiting time\n- Difficult to predict execution time\n\n## Round Robin (RR)\n- Preemptive\n- Uses time quantum\n- Good for time-sharing systems\n\n## Priority Scheduling\n- Can be preemptive or non-preemptive\n- Can cause starvation\n- Aging can solve starvation",
+                type: "Study Guide",
+                visibility: "public",
+                author: "Rajesh Kumar",
+                date: "2025-07-03",
+                likes: 27,
+                downloads: 52
+            },
+            {
+                id: 6,
+                title: "Machine Learning Basics",
+                subject: "Machine Learning",
+                description: "Introduction to machine learning concepts, types, and basic algorithms with Python examples.",
+                content: "# Machine Learning Fundamentals\n\n## Types of Machine Learning\n1. **Supervised Learning**\n   - Classification\n   - Regression\n\n2. **Unsupervised Learning**\n   - Clustering\n   - Dimensionality Reduction\n\n3. **Reinforcement Learning**\n   - Agent-Environment interaction\n   - Reward-based learning\n\n## Common Algorithms\n- Linear Regression\n- Logistic Regression\n- Decision Trees\n- K-Means Clustering\n- Neural Networks\n\n## Python Libraries\n- Scikit-learn\n- TensorFlow\n- PyTorch\n- Pandas\n- NumPy",
+                type: "Lecture Notes",
+                visibility: "public",
+                author: "Dr. Sarah Johnson",
+                date: "2025-07-02",
+                likes: 41,
+                downloads: 95
+            }
+        ];
+
+        let editingNoteId = null;
+
+        function showCreateForm() {
+            document.getElementById('noteForm').classList.add('active');
+            document.getElementById('formTitle').textContent = 'Create New Note';
+            document.getElementById('noteFormElement').reset();
+            editingNoteId = null;
+        }
+
+        function cancelForm() {
+            document.getElementById('noteForm').classList.remove('active');
+            editingNoteId = null;
+        }
+
+        function editNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                document.getElementById('noteForm').classList.add('active');
+                document.getElementById('formTitle').textContent = 'Edit Note';
+                document.getElementById('noteTitle').value = note.title;
+                document.getElementById('noteSubject').value = note.subject;
+                document.getElementById('noteDescription').value = note.description;
+                document.getElementById('noteContent').value = note.content;
+                document.getElementById('noteType').value = note.type;
+                document.getElementById('noteVisibility').value = note.visibility;
+                editingNoteId = id;
+            }
+        }
+
+        function deleteNote(id) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes = notes.filter(n => n.id !== id);
+                renderNotes();
+            }
+        }
+
+        function viewNote(id) {
+            const note = notes.find(n => n.id === id);
+            if (note) {
+                document.getElementById('modalTitle').textContent = note.title;
+                document.getElementById('modalContent').innerHTML = `
+                    <div class="note-details">
+                        <div class="note-meta" style="margin-bottom: 1rem;">
+                            <span class="subject-tag">${note.subject}</span>
+                            <span class="subject-tag">${note.type}</span>
+                            <span>By ${note.author} • ${note.date}</span>
+                        </div>
+                        <p style="margin-bottom: 1rem;"><strong>Description:</strong> ${note.description}</p>
+                        <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 4px; white-space: pre-wrap; font-family: monospace;">${note.content}</div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.9rem; color: #6B7280;">
+                            <span><i class="ri-heart-line"></i> ${note.likes} likes</span>
+                            <span><i class="ri-download-line"></i> ${note.downloads} downloads</span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('viewModal').style.display = 'block';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function filterNotes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+
+            const filteredNotes = notes.filter(note => {
+                const matchesSearch = note.title.toLowerCase().includes(searchTerm) || 
+                                    note.description.toLowerCase().includes(searchTerm) ||
+                                    note.author.toLowerCase().includes(searchTerm);
+                const matchesSubject = !subjectFilter || note.subject === subjectFilter;
+                const matchesType = !typeFilter || note.type === typeFilter;
+                
+                return matchesSearch && matchesSubject && matchesType;
+            });
+
+            renderNotes(filteredNotes);
+        }
+
+        function renderNotes(notesToRender = notes) {
+            const container = document.getElementById('notesContainer');
+            container.innerHTML = notesToRender.map(note => `
+                <div class="note-card">
+                    <div class="note-actions">
+                        <button onclick="editNote(${note.id})" title="Edit">
+                            <i class="ri-edit-line"></i>
+                        </button>
+                        <button onclick="deleteNote(${note.id})" title="Delete">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                    <h4 style="margin-bottom: 1rem; cursor: pointer;" onclick="viewNote(${note.id})">${note.title}</h4>
+                    <div class="profile" style="margin-bottom: 1rem;">
+                        <div class="image">
+                            <img src="avatar.svg" alt="">
+                        </div>
+                        <p>${note.author}</p>
+                    </div>
+                    <p style="margin-bottom: 1rem; color: #6B7280;">${note.description}</p>
+                    <div class="note-meta">
+                        <div style="display: flex; gap: 0.5rem;">
+                            <span class="subject-tag">${note.subject}</span>
+                            <span class="subject-tag">${note.type}</span>
+                        </div>
+                        <span>${note.date}</span>
+                    </div>
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.8rem; color: #6B7280;">
+                        <span><i class="ri-heart-line"></i> ${note.likes}</span>
+                        <span><i class="ri-download-line"></i> ${note.downloads}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Form submission
+        document.getElementById('noteFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const noteData = {
+                title: formData.get('title'),
+                subject: formData.get('subject'),
+                description: formData.get('description'),
+                content: formData.get('content'),
+                type: formData.get('type'),
+                visibility: formData.get('visibility'),
+                author: "Vinay Sriramoju", // Current user
+                date: new Date().toISOString().split('T')[0],
+                likes: 0,
+                downloads: 0
+            };
+
+            if (editingNoteId) {
+                // Update existing note
+                const index = notes.findIndex(n => n.id === editingNoteId);
+                notes[index] = { ...notes[index], ...noteData };
+            } else {
+                // Create new note
+                noteData.id = Date.now();
+                notes.unshift(noteData);
+            }
+
+            cancelForm();
+            renderNotes();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('viewModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initial render
+        renderNotes();
+    </script>
+</body>
+</html>

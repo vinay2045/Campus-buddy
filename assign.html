@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Tracker - Campus Buddy</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+        rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+        .form-container {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .form-container.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1F2937;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.9rem;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #1F2937;
+            color: #ffffff;
+        }
+        
+        .btn-secondary {
+            background-color: #6B7280;
+            color: #ffffff;
+        }
+        
+        .btn-danger {
+            background-color: #DC2626;
+            color: #ffffff;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .assignment-card {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .assignment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .assignment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .assignment-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+        
+        .assignment-actions button:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .assignment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .priority-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .priority-high {
+            background-color: #FEE2E2;
+            color: #DC2626;
+        }
+        
+        .priority-medium {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        
+        .priority-low {
+            background-color: #D1FAE5;
+            color: #059669;
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .search-filter input,
+        .search-filter select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #10b981;
+            transition: width 0.3s ease;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 0rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6B7280;
+        }
+        
+        .close:hover {
+            color: #1F2937;
+        }
+        
+        .assignment-description {
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        
+        .days-remaining {
+            font-weight: 600;
+        }
+        
+        .days-remaining.urgent {
+            color: #DC2626;
+        }
+        
+        .days-remaining.moderate {
+            color: #D97706;
+        }
+        
+        .days-remaining.comfortable {
+            color: #059669;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: #fff;
+            padding: 1.5rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1F2937;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6B7280;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <div class="p1">
+                <h2 class="appname">Campus Buddy</h2>
+            </div>
+            <div class="p2">
+                <a href="index.html"><span><i class="ri-home-2-line"></i> Dashboard</span></a>
+                <a href="note.html"><span><i class="ri-booklet-fill"></i> Note Sharing</span></a>
+                <a href="assign.html"><span><i class="ri-calendar-todo-fill"></i> AssignmentTracker</span></a>
+                <a href="peer.html"><span><i class="ri-team-line"></i> Peer Connect</span></a>
+                <a href="mentorship.html"><span><i class="ri-graduation-cap-fill"></i> Mentorship</span></a>
+                <a href="jobs.html"><span><i class="ri-terminal-line"></i> Jobs& Internships</span></a>
+            </div>
+            <div class="p3">
+                <p>@ 2025 Campus Buddy</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="p1">
+                <h3>Assignment Tracker</h3>
+                <button class="btn btn-primary" onclick="showCreateForm()">
+                    <i class="ri-add-line"></i> Add Assignment
+                </button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAssignments">0</div>
+                    <div class="stat-label">Total Assignments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedAssignments">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingAssignments">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="overdue">0</div>
+                    <div class="stat-label">Overdue</div>
+                </div>
+            </div>
+
+            <!-- Create/Edit Form -->
+            <div class="form-container" id="assignmentForm">
+                <h4 id="formTitle">Add New Assignment</h4>
+                <form id="assignmentFormElement">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="assignmentTitle">Assignment Title</label>
+                            <input type="text" id="assignmentTitle" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignmentSubject">Subject</label>
+                            <select id="assignmentSubject" name="subject" required>
+                                <option value="">Select Subject</option>
+                                <option value="Data Structures">Data Structures</option>
+                                <option value="Algorithms">Algorithms</option>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Database Systems">Database Systems</option>
+                                <option value="Operating Systems">Operating Systems</option>
+                                <option value="Computer Networks">Computer Networks</option>
+                                <option value="Software Engineering">Software Engineering</option>
+                                <option value="Machine Learning">Machine Learning</option>
+                                <option value="Linear Algebra">Linear Algebra</option>
+                                <option value="Calculus">Calculus</option>
+                                <option value="Statistics">Statistics</option>
+                                <option value="Physics">Physics</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignmentDescription">Description</label>
+                        <textarea id="assignmentDescription" name="description" placeholder="Assignment requirements and details..." required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="assignmentDueDate">Due Date</label>
+                            <input type="date" id="assignmentDueDate" name="dueDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignmentPriority">Priority</label>
+                            <select id="assignmentPriority" name="priority" required>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="assignmentStatus">Status</label>
+                            <select id="assignmentStatus" name="status" required>
+                                <option value="not-started">Not Started</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="submitted">Submitted</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignmentProgress">Progress (%)</label>
+                            <input type="number" id="assignmentProgress" name="progress" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="assignmentMaxMarks">Max Marks</label>
+                            <input type="number" id="assignmentMaxMarks" name="maxMarks" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assignmentWeight">Weight (%)</label>
+                            <input type="number" id="assignmentWeight" name="weight" min="1" max="100" value="10">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignmentInstructor">Instructor</label>
+                        <input type="text" id="assignmentInstructor" name="instructor" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="assignmentNotes">Additional Notes</label>
+                        <textarea id="assignmentNotes" name="notes" placeholder="Any additional notes or reminders..."></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Assignment</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="Search assignments..." onkeyup="filterAssignments()">
+                <select id="subjectFilter" onchange="filterAssignments()">
+                    <option value="">All Subjects</option>
+                    <option value="Data Structures">Data Structures</option>
+                    <option value="Algorithms">Algorithms</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Database Systems">Database Systems</option>
+                    <option value="Operating Systems">Operating Systems</option>
+                    <option value="Computer Networks">Computer Networks</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Machine Learning">Machine Learning</option>
+                    <option value="Linear Algebra">Linear Algebra</option>
+                    <option value="Calculus">Calculus</option>
+                    <option value="Statistics">Statistics</option>
+                    <option value="Physics">Physics</option>
+                </select>
+                <select id="statusFilter" onchange="filterAssignments()">
+                    <option value="">All Status</option>
+                    <option value="not-started">Not Started</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="submitted">Submitted</option>
+                </select>
+                <select id="priorityFilter" onchange="filterAssignments()">
+                    <option value="">All Priorities</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <!-- Assignments Display -->
+            <div id="assignmentsContainer">
+                <!-- Assignments will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- View Assignment Modal -->
+    <div class="modal" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalTitle"></h4>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data storage
+        let assignments = [
+            {
+                id: 1,
+                title: "Implement Binary Search Tree",
+                subject: "Data Structures",
+                description: "Create a complete BST implementation with insert, delete, search, and traversal methods. Include time complexity analysis.",
+                dueDate: "2025-07-10",
+                priority: "high",
+                status: "in-progress",
+                progress: 60,
+                maxMarks: 100,
+                weight: 15,
+                instructor: "Dr. Smith",
+                notes: "Focus on balancing algorithms",
+                createdDate: "2025-07-01"
+            },
+            {
+                id: 2,
+                title: "Analysis of Sorting Algorithms",
+                subject: "Algorithms",
+                description: "Compare and analyze different sorting algorithms including bubble sort, merge sort, quick sort, and heap sort. Provide empirical analysis.",
+                dueDate: "2025-07-15",
+                priority: "medium",
+                status: "not-started",
+                progress: 0,
+                maxMarks: 80,
+                weight: 12,
+                instructor: "Prof. Johnson",
+                notes: "Use at least 3 different data sets",
+                createdDate: "2025-07-02"
+            },
+            {
+                id: 3,
+                title: "Build a React Portfolio",
+                subject: "Web Development",
+                description: "Create a responsive portfolio website using React, including routing, state management, and API integration.",
+                dueDate: "2025-07-20",
+                priority: "medium",
+                status: "completed",
+                progress: 100,
+                maxMarks: 120,
+                weight: 20,
+                instructor: "Ms. Davis",
+                notes: "Deploy to Netlify or Vercel",
+                createdDate: "2025-06-25"
+            },
+            {
+                id: 4,
+                title: "Database Design Project",
+                subject: "Database Systems",
+                description: "Design and implement a complete database system for a library management system including normalization, triggers, and procedures.",
+                dueDate: "2025-07-25",
+                priority: "high",
+                status: "in-progress",
+                progress: 30,
+                maxMarks: 150,
+                weight: 25,
+                instructor: "Dr. Wilson",
+                notes: "Use PostgreSQL or MySQL",
+                createdDate: "2025-07-03"
+            },
+            {
+                id: 5,
+                title: "Operating System Scheduler",
+                subject: "Operating Systems",
+                description: "Implement different CPU scheduling algorithms and compare their performance metrics.",
+                dueDate: "2025-07-30",
+                priority: "medium",
+                status: "not-started",
+                progress: 0,
+                maxMarks: 90,
+                weight: 18,
+                instructor: "Prof. Brown",
+                notes: "Include Gantt charts for visualization",
+                createdDate: "2025-07-04"
+            },
+            {
+                id: 6,
+                title: "Network Protocol Analysis",
+                subject: "Computer Networks",
+                description: "Analyze different network protocols using Wireshark and provide detailed reports on packet structures and communication patterns.",
+                dueDate: "2025-08-05",
+                priority: "low",
+                status: "not-started",
+                progress: 0,
+                maxMarks: 70,
+                weight: 10,
+                instructor: "Dr. Taylor",
+                notes: "Focus on TCP/IP and HTTP protocols",
+                createdDate: "2025-07-05"
+            },
+            {
+                id: 7,
+                title: "Machine Learning Model",
+                subject: "Machine Learning",
+                description: "Build and train a machine learning model for image classification using TensorFlow or PyTorch. Include data preprocessing and evaluation metrics.",
+                dueDate: "2025-08-10",
+                priority: "high",
+                status: "in-progress",
+                progress: 25,
+                maxMarks: 130,
+                weight: 22,
+                instructor: "Dr. Anderson",
+                notes: "Use CIFAR-10 or custom dataset",
+                createdDate: "2025-07-06"
+            },
+            {
+                id: 8,
+                title: "Linear Algebra Problem Set",
+                subject: "Linear Algebra",
+                description: "Solve complex problems involving eigenvalues, eigenvectors, matrix decompositions, and applications in computer graphics.",
+                dueDate: "2025-07-12",
+                priority: "medium",
+                status: "completed",
+                progress: 100,
+                maxMarks: 60,
+                weight: 8,
+                instructor: "Prof. Martinez",
+                notes: "Show all work and proofs",
+                createdDate: "2025-07-01"
+            }
+        ];
+
+        let editingAssignmentId = null;
+
+        function showCreateForm() {
+            document.getElementById('assignmentForm').classList.add('active');
+            document.getElementById('formTitle').textContent = 'Add New Assignment';
+            document.getElementById('assignmentFormElement').reset();
+            editingAssignmentId = null;
+        }
+
+        function cancelForm() {
+            document.getElementById('assignmentForm').classList.remove('active');
+            editingAssignmentId = null;
+        }
+
+        function editAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (assignment) {
+                document.getElementById('assignmentForm').classList.add('active');
+                document.getElementById('formTitle').textContent = 'Edit Assignment';
+                document.getElementById('assignmentTitle').value = assignment.title;
+                document.getElementById('assignmentSubject').value = assignment.subject;
+                document.getElementById('assignmentDescription').value = assignment.description;
+                document.getElementById('assignmentDueDate').value = assignment.dueDate;
+                document.getElementById('assignmentPriority').value = assignment.priority;
+                document.getElementById('assignmentStatus').value = assignment.status;
+                document.getElementById('assignmentProgress').value = assignment.progress;
+                document.getElementById('assignmentMaxMarks').value = assignment.maxMarks;
+                document.getElementById('assignmentWeight').value = assignment.weight;
+                document.getElementById('assignmentInstructor').value = assignment.instructor;
+                document.getElementById('assignmentNotes').value = assignment.notes;
+                editingAssignmentId = id;
+            }
+        }
+
+        function deleteAssignment(id) {
+            if (confirm('Are you sure you want to delete this assignment?')) {
+                assignments = assignments.filter(a => a.id !== id);
+                renderAssignments();
+                updateStats();
+            }
+        }
+
+        function viewAssignment(id) {
+            const assignment = assignments.find(a => a.id === id);
+            if (assignment) {
+                const daysRemaining = calculateDaysRemaining(assignment.dueDate);
+                const daysClass = daysRemaining <= 2 ? 'urgent' : daysRemaining <= 7 ? 'moderate' : 'comfortable';
+                
+                document.getElementById('modalTitle').textContent = assignment.title;
+                document.getElementById('modalContent').innerHTML = `
+                    <div class="assignment-details">
+                        <div class="assignment-meta" style="margin-bottom: 1rem;">
+                            <span class="priority-tag priority-${assignment.priority}">${assignment.priority.toUpperCase()}</span>
+                            <span class="status ${assignment.status}">${assignment.status.replace('-', ' ').toUpperCase()}</span>
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Subject:</strong> ${assignment.subject}<br>
+                            <strong>Instructor:</strong> ${assignment.instructor}<br>
+                            <strong>Due Date:</strong> ${assignment.dueDate} <span class="days-remaining ${daysClass}">(${daysRemaining} days remaining)</span><br>
+                            <strong>Max Marks:</strong> ${assignment.maxMarks}<br>
+                            <strong>Weight:</strong> ${assignment.weight}%
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Progress:</strong> ${assignment.progress}%
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${assignment.progress}%"></div>
+                            </div>
+                        </div>
+                        <div class="assignment-description">
+                            <strong>Description:</strong><br>
+                            ${assignment.description}
+                        </div>
+                        ${assignment.notes ? `<div style="margin-top: 1rem;"><strong>Notes:</strong><br>${assignment.notes}</div>` : ''}
+                    </div>
+                `;
+                document.getElementById('viewModal').style.display = 'block';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function calculateDaysRemaining(dueDate) {
+            const today = new Date();
+            const due = new Date(dueDate);
+            const timeDiff = due.getTime() - today.getTime();
+            return Math.ceil(timeDiff / (1000 * 3600 * 24));
+        }
+
+        function filterAssignments() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const priorityFilter = document.getElementById('priorityFilter').value;
+
+            const filteredAssignments = assignments.filter(assignment => {
+                const matchesSearch = assignment.title.toLowerCase().includes(searchTerm) || 
+                                    assignment.description.toLowerCase().includes(searchTerm) ||
+                                    assignment.instructor.toLowerCase().includes(searchTerm);
+                const matchesSubject = !subjectFilter || assignment.subject === subjectFilter;
+                const matchesStatus = !statusFilter || assignment.status === statusFilter;
+                const matchesPriority = !priorityFilter || assignment.priority === priorityFilter;
+                
+                return matchesSearch && matchesSubject && matchesStatus && matchesPriority;
+            });
+
+            renderAssignments(filteredAssignments);
+        }
+
+        function updateStats() {
+            const total = assignments.length;
+            const completed = assignments.filter(a => a.status === 'completed' || a.status === 'submitted').length;
+            const pending = assignments.filter(a => a.status === 'not-started' || a.status === 'in-progress').length;
+            const overdue = assignments.filter(a => {
+                const today = new Date();
+                const due = new Date(a.dueDate);
+                return due < today && (a.status === 'not-started' || a.status === 'in-progress');
+            }).length;
+
+            document.getElementById('totalAssignments').textContent = total;
+            document.getElementById('completedAssignments').textContent = completed;
+            document.getElementById('pendingAssignments').textContent = pending;
+            document.getElementById('overdue').textContent = overdue;
+        }
+
+        function renderAssignments(assignmentsToRender = assignments) {
+            const container = document.getElementById('assignmentsContainer');
+            container.innerHTML = assignmentsToRender.map(assignment => {
+                const daysRemaining = calculateDaysRemaining(assignment.dueDate);
+                const daysClass = daysRemaining <= 2 ? 'urgent' : daysRemaining <= 7 ? 'moderate' : 'comfortable';
+                
+                return `
+                    <div class="assignment-card">
+                        <div class="assignment-header">
+                            <div>
+                                <h4 style="margin-bottom: 0.5rem; cursor: pointer;" onclick="viewAssignment(${assignment.id})">${assignment.title}</h4>
+                                <p style="color: #6B7280; margin-bottom: 0.5rem;">${assignment.subject} • ${assignment.instructor}</p>
+                            </div>
+                            <div class="assignment-actions">
+                                <button onclick="editAssignment(${assignment.id})" title="Edit">
+                                    <i class="ri-edit-line"></i>
+                                </button>
+                                <button onclick="deleteAssignment(${assignment.id})" title="Delete">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p style="margin-bottom: 1rem; color: #374151;">${assignment.description}</p>
+                        <div class="assignment-meta">
+                            <div class="meta-item">
+                                <i class="ri-calendar-line"></i>
+                                <span>Due: ${assignment.dueDate}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="ri-time-line"></i>
+                                <span class="days-remaining ${daysClass}">${daysRemaining} days remaining</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="priority-tag priority-${assignment.priority}">${assignment.priority.toUpperCase()}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="status ${assignment.status}">${assignment.status.replace('-', ' ').toUpperCase()}</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <span style="font-size: 0.9rem; font-weight: 500;">Progress: ${assignment.progress}%</span>
+                                <span style="font-size: 0.9rem; color: #6B7280;">${assignment.maxMarks} marks • ${assignment.weight}% weight</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${assignment.progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Form submission
+        document.getElementById('assignmentFormElement').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const assignmentData = {
+                title: formData.get('title'),
+                subject: formData.get('subject'),
+                description: formData.get('description'),
+                dueDate: formData.get('dueDate'),
+                priority: formData.get('priority'),
+                status: formData.get('status'),
+                progress: parseInt(formData.get('progress')),
+                maxMarks: parseInt(formData.get('maxMarks')),
+                weight: parseInt(formData.get('weight')),
+                instructor: formData.get('instructor'),
+                notes: formData.get('notes'),
+                createdDate: new Date().toISOString().split('T')[0]
+            };
+
+            if (editingAssignmentId) {
+                // Update existing assignment
+                const index = assignments.findIndex(a => a.id === editingAssignmentId);
+                assignments[index] = { ...assignments[index], ...assignmentData };
+            } else {
+                // Create new assignment
+                assignmentData.id = Date.now();
+                assignments.unshift(assignmentData);
+            }
+
+            cancelForm();
+            renderAssignments();
+            updateStats();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('viewModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Initial render
+        renderAssignments();
+        updateStats();
+    </script>
+</body>
+</html>

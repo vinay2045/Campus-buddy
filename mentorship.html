@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentorship - Campus Buddy</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+        rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+        .mentorship-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        
+        .mentorship-filters input,
+        .mentorship-filters select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+        }
+        
+        .mentorship-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab-btn.active {
+            color: #1f2937;
+            border-bottom-color: #1f2937;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .mentor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .mentor-card {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            position: relative;
+        }
+        
+        .mentor-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #10b981;
+        }
+        
+        .mentor-status.offline {
+            background-color: #6b7280;
+        }
+        
+        .mentor-status.busy {
+            background-color: #f59e0b;
+        }
+        
+        .mentor-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 0.2rem;
+        }
+        
+        .star {
+            color: #fbbf24;
+        }
+        
+        .star.empty {
+            color: #d1d5db;
+        }
+        
+        .pricing {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .price-tag {
+            background-color: #10b981;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .price-tag.free {
+            background-color: #059669;
+        }
+        
+        .price-tag.paid {
+            background-color: #dc2626;
+        }
+        
+        .mentor-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .connect-btn {
+            background-color: #1F2937;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0rem;
+            cursor: pointer;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            width: 100%;
+        }
+        
+        .connect-btn:hover {
+            background-color: #374151;
+            transform: scale(1.02);
+        }
+        
+        .connect-btn.booked {
+            background-color: #10b981;
+        }
+        
+        .connect-btn.pending {
+            background-color: #f59e0b;
+        }
+        
+        .expertise-tags {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .expertise-tag {
+            background-color: #f3f4f6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .mentor-bio {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+        
+        .company-tag {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .experience-tag {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .availability {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #059669;
+            font-weight: 500;
+        }
+        
+        .availability.busy {
+            color: #dc2626;
+        }
+        
+        .session-types {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .session-type {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <div class="p1">
+                <h2 class="appname">Campus Buddy</h2>
+            </div>
+            <div class="p2">
+                <a href="index.html"><span><i class="ri-home-2-line"></i> Dashboard</span></a>
+                <a href="note.html"><span><i class="ri-booklet-fill"></i> Note Sharing</span></a>
+                <a href="assign.html"><span><i class="ri-calendar-todo-fill"></i> AssignmentTracker</span></a>
+                <a href="peer.html"><span><i class="ri-team-line"></i> Peer Connect</span></a>
+                <a href="mentorship.html"><span><i class="ri-graduation-cap-fill"></i> Mentorship</span></a>
+                <a href="jobs.html"><span><i class="ri-terminal-line"></i> Jobs& Internships</span></a>
+            </div>
+            <div class="p3">
+                <p>@ 2025 Campus Buddy</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="p1">
+                <h3>Mentorship Hub</h3>
+                <button class="btn btn-primary">
+                    <i class="ri-add-line"></i> Become a Mentor
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mentorship-tabs">
+                <button class="tab-btn active" onclick="showTab('find-mentors')">Find Mentors</button>
+                <button class="tab-btn" onclick="showTab('my-mentors')">My Mentors</button>
+                <button class="tab-btn" onclick="showTab('mentoring')">I'm Mentoring</button>
+            </div>
+
+            <!-- Find Mentors Tab -->
+            <div id="find-mentors" class="tab-content active">
+                <!-- Search and Filter -->
+                <div class="mentorship-filters">
+                    <input type="text" id="mentorSearch" placeholder="Search mentors..." onkeyup="filterMentors()">
+                    <select id="expertiseFilter" onchange="filterMentors()">
+                        <option value="">All Expertise</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Machine Learning">Machine Learning</option>
+                        <option value="Product Management">Product Management</option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                        <option value="DevOps">DevOps</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                        <option value="Mobile Development">Mobile Development</option>
+                        <option value="Cloud Computing">Cloud Computing</option>
+                        <option value="Blockchain">Blockchain</option>
+                    </select>
+                    <select id="companyFilter" onchange="filterMentors()">
+                        <option value="">All Companies</option>
+                        <option value="Google">Google</option>
+                        <option value="Microsoft">Microsoft</option>
+                        <option value="Amazon">Amazon</option>
+                        <option value="Meta">Meta</option>
+                        <option value="Apple">Apple</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Uber">Uber</option>
+                        <option value="Spotify">Spotify</option>
+                        <option value="Airbnb">Airbnb</option>
+                    </select>
+                    <select id="pricingFilter" onchange="filterMentors()">
+                        <option value="">All Pricing</option>
+                        <option value="Free">Free</option>
+                        <option value="Paid">Paid</option>
+                    </select>
+                </div>
+
+                <!-- Mentors Grid -->
+                <div class="mentor-grid" id="mentorsContainer">
+                    <!-- Mentors will be populated here -->
+                </div>
+            </div>
+
+            <!-- My Mentors Tab -->
+            <div id="my-mentors" class="tab-content">
+                <div class="mentor-grid">
+                    <div class="mentor-card">
+                        <div class="mentor-status"></div>
+                        <div class="profile" style="margin-bottom: 1rem;">
+                            <div class="image">
+                                <img src="avatar.svg" alt="Sarah Johnson">
+                            </div>
+                            <div class="n1-b1-p1-img1">
+                                <p style="font-weight: 600;">Sarah Johnson</p>
+                                <p class="student-info">Senior Software Engineer</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                            <span class="company-tag">Google</span>
+                            <span class="experience-tag">8 years</span>
+                            <span class="price-tag paid">$50/session</span>
+                        </div>
+                        
+                        <div class="mentor-rating">
+                            <div class="stars">
+                                <i class="ri-star-fill star"></i>
+                                <i class="ri-star-fill star"></i>
+                                <i class="ri-star-fill star"></i>
+                                <i class="ri-star-fill star"></i>
+                                <i class="ri-star-fill star"></i>
+                            </div>
+                            <span style="font-size: 0.8rem; color: #6b7280;">5.0 (24 reviews)</span>
+                        </div>
+                        
+                        <p class="mentor-bio">Next session: Tomorrow at 3:00 PM</p>
+                        
+                        <div class="expertise-tags">
+                            <span class="expertise-tag">React</span>
+                            <span class="expertise-tag">Node.js</span>
+                            <span class="expertise-tag">System Design</span>
+                        </div>
+                        
+                        <div class="mentor-stats">
+                            <span><i class="ri-calendar-line"></i> 8 sessions completed</span>
+                            <span><i class="ri-time-line"></i> 3 upcoming</span>
+                        </div>
+                        
+                        <button class="connect-btn booked">
+                            View Sessions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- I'm Mentoring Tab -->
+            <div id="mentoring" class="tab-content">
+                <div class="mentor-grid">
+                    <div class="mentor-card">
+                        <div class="profile" style="margin-bottom: 1rem;">
+                            <div class="image">
+                                <img src="avatar (1).svg" alt="Alex Chen">
+                            </div>
+                            <div class="n1-b1-p1-img1">
+                                <p style="font-weight: 600;">Alex Chen</p>
+                                <p class="student-info">Computer Science, Junior</p>
+                            </div>
+                        </div>
+                        
+                        <p class="mentor-bio">Learning web development and system design. Very dedicated student.</p>
+                        
+                        <div class="expertise-tags">
+                            <span class="expertise-tag">JavaScript</span>
+                            <span class="expertise-tag">React</span>
+                            <span class="expertise-tag">Problem Solving</span>
+                        </div>
+                        
+                        <div class="mentor-stats">
+                            <span><i class="ri-calendar-line"></i> 12 sessions completed</span>
+                            <span><i class="ri-star-line"></i> 4.8 rating from student</span>
+                        </div>
+                        
+                        <button class="connect-btn">
+                            Schedule Next Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample mentors data
+        const mentors = [
+            {
+                id: 1,
+                name: "Sarah Johnson",
+                title: "Senior Software Engineer",
+                company: "Google",
+                experience: "8 years",
+                avatar: "avatar.svg",
+                rating: 4.9,
+                reviewCount: 127,
+                status: "online",
+                pricing: "Paid",
+                pricePerSession: 50,
+                bio: "Full-stack engineer with expertise in React, Node.js, and system design. Passionate about mentoring junior developers.",
+                expertise: ["React", "Node.js", "System Design", "JavaScript", "Python"],
+                availability: "Available today",
+                sessionTypes: ["1-on-1", "Code Review", "Interview Prep"],
+                sessionsCompleted: 340,
+                responseTime: "< 2 hours"
+            },
+            {
+                id: 2,
+                name: "Michael Chen",
+                title: "Data Scientist",
+                company: "Microsoft",
+                experience: "6 years",
+                avatar: "avatar (1).svg",
+                rating: 4.8,
+                reviewCount: 89,
+                status: "online",
+                pricing: "Free",
+                pricePerSession: 0,
+                bio: "Machine learning engineer helping students break into data science. Specialized in ML algorithms and data visualization.",
+                expertise: ["Machine Learning", "Python", "Data Science", "Statistics", "SQL"],
+                availability: "Available tomorrow",
+                sessionTypes: ["1-on-1", "Project Review", "Career Guidance"],
+                sessionsCompleted: 156,
+                responseTime: "< 1 hour"
+            },
+            {
+                id: 3,
+                name: "Emily Rodriguez",
+                title: "Product Manager",
+                company: "Meta",
+                experience: "5 years",
+                avatar: "avatar (2).svg",
+                rating: 4.7,
+                reviewCount: 64,
+                status: "busy",
+                pricing: "Paid",
+                pricePerSession: 75,
+                bio: "Product manager with experience in user research, product strategy, and cross-functional leadership.",
+                expertise: ["Product Management", "User Research", "Strategy", "Analytics", "Leadership"],
+                availability: "Busy until next week",
+                sessionTypes: ["1-on-1", "Portfolio Review", "PM Interview Prep"],
+                sessionsCompleted: 89,
+                responseTime: "< 4 hours"
+            },
+            {
+                id: 4,
+                name: "David Kim",
+                title: "UI/UX Designer",
+                company: "Apple",
+                experience: "7 years",
+                avatar: "avatar.svg",
+                rating: 4.9,
+                reviewCount: 112,
+                status: "online",
+                pricing: "Paid",
+                pricePerSession: 60,
+                bio: "Senior designer focusing on mobile and web experiences. Love helping aspiring designers build strong portfolios.",
+                expertise: ["UI/UX Design", "Figma", "Design Systems", "User Research", "Prototyping"],
+                availability: "Available today",
+                sessionTypes: ["1-on-1", "Portfolio Review", "Design Critique"],
+                sessionsCompleted: 278,
+                responseTime: "< 30 min"
+            },
+            {
+                id: 5,
+                name: "Raj Patel",
+                title: "DevOps Engineer",
+                company: "Amazon",
+                experience: "9 years",
+                avatar: "avatar (1).svg",
+                rating: 4.8,
+                reviewCount: 73,
+                status: "offline",
+                pricing: "Free",
+                pricePerSession: 0,
+                bio: "DevOps engineer passionate about cloud infrastructure and automation. Helping students learn AWS and Kubernetes.",
+                expertise: ["DevOps", "AWS", "Kubernetes", "Docker", "CI/CD"],
+                availability: "Available weekends",
+                sessionTypes: ["1-on-1", "Hands-on Labs", "Career Guidance"],
+                sessionsCompleted: 134,
+                responseTime: "< 3 hours"
+            },
+            {
+                id: 6,
+                name: "Lisa Wang",
+                title: "Cybersecurity Specialist",
+                company: "Netflix",
+                experience: "4 years",
+                avatar: "avatar (2).svg",
+                rating: 4.6,
+                reviewCount: 45,
+                status: "online",
+                pricing: "Paid",
+                pricePerSession: 55,
+                bio: "Cybersecurity expert specializing in ethical hacking and network security. Helping students prepare for security certifications.",
+                expertise: ["Cybersecurity", "Ethical Hacking", "Network Security", "Penetration Testing", "CISSP"],
+                availability: "Available today",
+                sessionTypes: ["1-on-1", "Security Audit", "Certification Prep"],
+                sessionsCompleted: 67,
+                responseTime: "< 1 hour"
+            },
+            {
+                id: 7,
+                name: "James Wilson",
+                title: "Mobile Developer",
+                company: "Uber",
+                experience: "6 years",
+                avatar: "avatar.svg",
+                rating: 4.7,
+                reviewCount: 98,
+                status: "online",
+                pricing: "Paid",
+                pricePerSession: 45,
+                bio: "iOS and Android developer with experience in React Native and Flutter. Passionate about mobile app development.",
+                expertise: ["iOS Development", "Android Development", "React Native", "Flutter", "Mobile Architecture"],
+                availability: "Available tomorrow",
+                sessionTypes: ["1-on-1", "Code Review", "App Store Guidance"],
+                sessionsCompleted: 189,
+                responseTime: "< 2 hours"
+            },
+            {
+                id: 8,
+                name: "Priya Sharma",
+                title: "Cloud Architect",
+                company: "Spotify",
+                experience: "10 years",
+                avatar: "avatar (1).svg",
+                rating: 4.9,
+                reviewCount: 156,
+                status: "busy",
+                pricing: "Paid",
+                pricePerSession: 80,
+                bio: "Cloud architect with expertise in AWS, Azure, and GCP. Helping engineers design scalable cloud solutions.",
+                expertise: ["Cloud Computing", "AWS", "Azure", "GCP", "Microservices"],
+                availability: "Busy this week",
+                sessionTypes: ["1-on-1", "Architecture Review", "Cloud Migration"],
+                sessionsCompleted: 445,
+                responseTime: "< 6 hours"
+            },
+            {
+                id: 9,
+                name: "Alex Thompson",
+                title: "Blockchain Developer",
+                company: "Airbnb",
+                experience: "3 years",
+                avatar: "avatar (2).svg",
+                rating: 4.5,
+                reviewCount: 29,
+                status: "online",
+                pricing: "Free",
+                pricePerSession: 0,
+                bio: "Blockchain developer working on Web3 projects. Helping students understand cryptocurrency and smart contracts.",
+                expertise: ["Blockchain", "Solidity", "Web3", "Smart Contracts", "DeFi"],
+                availability: "Available weekends",
+                sessionTypes: ["1-on-1", "Project Review", "Web3 Guidance"],
+                sessionsCompleted: 34,
+                responseTime: "< 1 hour"
+            }
+        ];
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let starsHTML = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="ri-star-fill star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                starsHTML += '<i class="ri-star-half-fill star"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="ri-star-line star empty"></i>';
+            }
+            
+            return starsHTML;
+        }
+
+        function renderMentors(mentorsToRender = mentors) {
+            const container = document.getElementById('mentorsContainer');
+            container.innerHTML = mentorsToRender.map(mentor => `
+                <div class="mentor-card">
+                    <div class="mentor-status ${mentor.status}"></div>
+                    <div class="profile" style="margin-bottom: 1rem;">
+                        <div class="image">
+                            <img src="${mentor.avatar}" alt="${mentor.name}">
+                        </div>
+                        <div class="n1-b1-p1-img1">
+                            <p style="font-weight: 600;">${mentor.name}</p>
+                            <p class="student-info">${mentor.title}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span class="company-tag">${mentor.company}</span>
+                        <span class="experience-tag">${mentor.experience}</span>
+                        <span class="price-tag ${mentor.pricing.toLowerCase()}">
+                            ${mentor.pricing === 'Free' ? 'Free' : '$' + mentor.pricePerSession + '/session'}
+                        </span>
+                    </div>
+                    
+                    <div class="mentor-rating">
+                        <div class="stars">${generateStars(mentor.rating)}</div>
+                        <span style="font-size: 0.8rem; color: #6b7280;">${mentor.rating} (${mentor.reviewCount} reviews)</span>
+                    </div>
+                    
+                    <p class="mentor-bio">${mentor.bio}</p>
+                    
+                    <div class="expertise-tags">
+                        ${mentor.expertise.slice(0, 4).map(skill => `<span class="expertise-tag">${skill}</span>`).join('')}
+                    </div>
+                    
+                    <div class="session-types">
+                        ${mentor.sessionTypes.map(type => `<span class="session-type">${type}</span>`).join('')}
+                    </div>
+                    
+                    <div class="availability ${mentor.status}">${mentor.availability}</div>
+                    
+                    <div class="mentor-stats">
+                        <span><i class="ri-book-read-line"></i> ${mentor.sessionsCompleted} sessions</span>
+                        <span><i class="ri-time-line"></i> ${mentor.responseTime}</span>
+                    </div>
+                    
+                    <button class="connect-btn" onclick="bookMentor(${mentor.id})">
+                        Book Session
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function filterMentors() {
+            const searchTerm = document.getElementById('mentorSearch').value.toLowerCase();
+            const expertiseFilter = document.getElementById('expertiseFilter').value;
+            const companyFilter = document.getElementById('companyFilter').value;
+            const pricingFilter = document.getElementById('pricingFilter').value;
+
+            const filteredMentors = mentors.filter(mentor => {
+                const matchesSearch = mentor.name.toLowerCase().includes(searchTerm) || 
+                                    mentor.bio.toLowerCase().includes(searchTerm) ||
+                                    mentor.title.toLowerCase().includes(searchTerm);
+                const matchesExpertise = !expertiseFilter || mentor.expertise.includes(expertiseFilter);
+                const matchesCompany = !companyFilter || mentor.company === companyFilter;
+                const matchesPricing = !pricingFilter || mentor.pricing === pricingFilter;
+                
+                return matchesSearch && matchesExpertise && matchesCompany && matchesPricing;
+            });
+
+            renderMentors(filteredMentors);
+        }
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        function bookMentor(mentorId) {
+            const mentor = mentors.find(m => m.id === mentorId);
+            if (mentor) {
+                alert(`Booking session with ${mentor.name}...`);
+            }
+        }
+
+        // Initial render
+        renderMentors();
+    </script>
+</body>
+</html>

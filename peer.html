@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peer Connect - Campus Buddy</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+        rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <style>
+        .peer-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+        
+        .peer-filters input,
+        .peer-filters select {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0rem;
+            font-family: "JetBrains Mono", monospace;
+        }
+        
+        .peer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .peer-card {
+            background-color: #fff;
+            padding: 2rem;
+            border: 1px solid gray;
+            border-radius: 0rem;
+            position: relative;
+        }
+        
+        .peer-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #10b981;
+        }
+        
+        .peer-status.offline {
+            background-color: #6b7280;
+        }
+        
+        .peer-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .stars {
+            display: flex;
+            gap: 0.2rem;
+        }
+        
+        .star {
+            color: #fbbf24;
+        }
+        
+        .star.empty {
+            color: #d1d5db;
+        }
+        
+        .peer-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .connect-btn {
+            background-color: #1F2937;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0rem;
+            cursor: pointer;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            width: 100%;
+        }
+        
+        .connect-btn:hover {
+            background-color: #374151;
+            transform: scale(1.02);
+        }
+        
+        .connect-btn.connected {
+            background-color: #10b981;
+        }
+        
+        .connect-btn.pending {
+            background-color: #f59e0b;
+        }
+        
+        .university-tag {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .year-tag {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .peer-bio {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+        
+        .peer-interests {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .interest-tag {
+            background-color: #f3f4f6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .contact-info {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            align-items: center;
+        }
+        
+        .contact-btn {
+            background: none;
+            border: 1px solid #d1d5db;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        .contact-btn:hover {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <div class="p1">
+                <h2 class="appname">Campus Buddy</h2>
+            </div>
+            <div class="p2">
+                <a href="index.html"><span><i class="ri-home-2-line"></i> Dashboard</span></a>
+                <a href="note.html"><span><i class="ri-booklet-fill"></i> Note Sharing</span></a>
+                <a href="assign.html"><span><i class="ri-calendar-todo-fill"></i> AssignmentTracker</span></a>
+                <a href="peer.html"><span><i class="ri-team-line"></i> Peer Connect</span></a>
+                <a href="mentorship.html"><span><i class="ri-graduation-cap-fill"></i> Mentorship</span></a>
+                <a href="jobs.html"><span><i class="ri-terminal-line"></i> Jobs& Internships</span></a>
+            </div>
+            <div class="p3">
+                <p>@ 2025 Campus Buddy</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="p1">
+                <h3>Peer Connect</h3>
+                <button class="btn btn-primary">
+                    <i class="ri-add-line"></i> Find Study Partners
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="peer-filters">
+                <input type="text" id="searchInput" placeholder="Search peers..." onkeyup="filterPeers()">
+                <select id="universityFilter" onchange="filterPeers()">
+                    <option value="">All Universities</option>
+                    <option value="MIT">MIT</option>
+                    <option value="Stanford">Stanford</option>
+                    <option value="Harvard">Harvard</option>
+                    <option value="UC Berkeley">UC Berkeley</option>
+                    <option value="Carnegie Mellon">Carnegie Mellon</option>
+                    <option value="Georgia Tech">Georgia Tech</option>
+                    <option value="IIT Delhi">IIT Delhi</option>
+                    <option value="IIT Bombay">IIT Bombay</option>
+                    <option value="BITS Pilani">BITS Pilani</option>
+                    <option value="NIT Trichy">NIT Trichy</option>
+                </select>
+                <select id="yearFilter" onchange="filterPeers()">
+                    <option value="">All Years</option>
+                    <option value="Freshman">Freshman</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Graduate">Graduate</option>
+                </select>
+                <select id="subjectFilter" onchange="filterPeers()">
+                    <option value="">All Subjects</option>
+                    <option value="Data Structures">Data Structures</option>
+                    <option value="Algorithms">Algorithms</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Machine Learning">Machine Learning</option>
+                    <option value="Database Systems">Database Systems</option>
+                    <option value="Operating Systems">Operating Systems</option>
+                    <option value="Computer Networks">Computer Networks</option>
+                    <option value="Software Engineering">Software Engineering</option>
+                    <option value="Linear Algebra">Linear Algebra</option>
+                    <option value="Calculus">Calculus</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                </select>
+            </div>
+
+            <!-- Peers Grid -->
+            <div class="peer-grid" id="peersContainer">
+                <!-- Peers will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample peers data
+        const peers = [
+            {
+                id: 1,
+                name: "Alex Johnson",
+                university: "MIT",
+                year: "Senior",
+                major: "Computer Science",
+                avatar: "avatar.svg",
+                rating: 4.8,
+                reviewCount: 45,
+                status: "online",
+                bio: "Passionate about AI and machine learning. Love helping others understand complex algorithms.",
+                subjects: ["Machine Learning", "Data Structures", "Algorithms", "Python"],
+                interests: ["AI Research", "Competitive Programming", "Open Source"],
+                sessionsCompleted: 156,
+                responseTime: "< 1 hour",
+                connectionStatus: "available"
+            },
+            {
+                id: 2,
+                name: "Sarah Chen",
+                university: "Stanford",
+                year: "Junior",
+                major: "Computer Engineering",
+                avatar: "avatar (1).svg",
+                rating: 4.9,
+                reviewCount: 72,
+                status: "online",
+                bio: "Full-stack developer with expertise in React and Node.js. Available for project collaborations.",
+                subjects: ["Web Development", "Database Systems", "Software Engineering", "JavaScript"],
+                interests: ["Web3", "Blockchain", "Startups"],
+                sessionsCompleted: 203,
+                responseTime: "< 30 min",
+                connectionStatus: "available"
+            },
+            {
+                id: 3,
+                name: "Marcus Williams",
+                university: "Harvard",
+                year: "Graduate",
+                major: "Data Science",
+                avatar: "avatar (2).svg",
+                rating: 4.7,
+                reviewCount: 38,
+                status: "offline",
+                bio: "PhD candidate in Data Science. Specializing in statistical modeling and data visualization.",
+                subjects: ["Statistics", "Data Science", "Machine Learning", "R", "Python"],
+                interests: ["Research", "Data Visualization", "Sports Analytics"],
+                sessionsCompleted: 124,
+                responseTime: "< 2 hours",
+                connectionStatus: "connected"
+            },
+            {
+                id: 4,
+                name: "Emma Rodriguez",
+                university: "UC Berkeley",
+                year: "Sophomore",
+                major: "Mathematics",
+                avatar: "avatar.svg",
+                rating: 4.6,
+                reviewCount: 29,
+                status: "online",
+                bio: "Math enthusiast who loves breaking down complex problems into simple steps.",
+                subjects: ["Calculus", "Linear Algebra", "Statistics", "Discrete Math"],
+                interests: ["Pure Mathematics", "Tutoring", "Problem Solving"],
+                sessionsCompleted: 87,
+                responseTime: "< 1 hour",
+                connectionStatus: "pending"
+            },
+            {
+                id: 5,
+                name: "David Kim",
+                university: "Carnegie Mellon",
+                year: "Senior",
+                major: "Software Engineering",
+                avatar: "avatar (1).svg",
+                rating: 4.8,
+                reviewCount: 91,
+                status: "online",
+                bio: "Senior software engineer intern at Google. Experienced in system design and architecture.",
+                subjects: ["Software Engineering", "System Design", "Operating Systems", "Java"],
+                interests: ["System Architecture", "Cloud Computing", "DevOps"],
+                sessionsCompleted: 267,
+                responseTime: "< 45 min",
+                connectionStatus: "available"
+            },
+            {
+                id: 6,
+                name: "Lisa Zhang",
+                university: "Georgia Tech",
+                year: "Junior",
+                major: "Computer Science",
+                avatar: "avatar (2).svg",
+                rating: 4.9,
+                reviewCount: 56,
+                status: "online",
+                bio: "Cybersecurity specialist with focus on network security and ethical hacking.",
+                subjects: ["Computer Networks", "Cybersecurity", "Operating Systems", "C++"],
+                interests: ["Ethical Hacking", "Network Security", "Bug Bounty"],
+                sessionsCompleted: 145,
+                responseTime: "< 1 hour",
+                connectionStatus: "available"
+            },
+            {
+                id: 7,
+                name: "Raj Patel",
+                university: "IIT Delhi",
+                year: "Senior",
+                major: "Computer Science",
+                avatar: "avatar.svg",
+                rating: 4.7,
+                reviewCount: 83,
+                status: "offline",
+                bio: "Competitive programmer and algorithm enthusiast. ICPC world finalist.",
+                subjects: ["Algorithms", "Data Structures", "Competitive Programming", "C++"],
+                interests: ["Competitive Programming", "Algorithm Design", "Math Olympiad"],
+                sessionsCompleted: 189,
+                responseTime: "< 2 hours",
+                connectionStatus: "available"
+            },
+            {
+                id: 8,
+                name: "Priya Sharma",
+                university: "IIT Bombay",
+                year: "Graduate",
+                major: "Artificial Intelligence",
+                avatar: "avatar (1).svg",
+                rating: 4.8,
+                reviewCount: 67,
+                status: "online",
+                bio: "AI researcher working on natural language processing and computer vision.",
+                subjects: ["Machine Learning", "Deep Learning", "NLP", "Computer Vision"],
+                interests: ["AI Research", "NLP", "Computer Vision"],
+                sessionsCompleted: 178,
+                responseTime: "< 1 hour",
+                connectionStatus: "connected"
+            },
+            {
+                id: 9,
+                name: "Kevin O'Connor",
+                university: "MIT",
+                year: "Freshman",
+                major: "Physics",
+                avatar: "avatar (2).svg",
+                rating: 4.5,
+                reviewCount: 23,
+                status: "online",
+                bio: "Physics student with strong foundation in mathematics and problem-solving.",
+                subjects: ["Physics", "Calculus", "Linear Algebra", "Quantum Mechanics"],
+                interests: ["Theoretical Physics", "Quantum Computing", "Mathematics"],
+                sessionsCompleted: 45,
+                responseTime: "< 30 min",
+                connectionStatus: "available"
+            },
+            {
+                id: 10,
+                name: "Aisha Patel",
+                university: "BITS Pilani",
+                year: "Junior",
+                major: "Electronics Engineering",
+                avatar: "avatar.svg",
+                rating: 4.6,
+                reviewCount: 34,
+                status: "offline",
+                bio: "Electronics engineering student with passion for embedded systems and IoT.",
+                subjects: ["Digital Electronics", "Embedded Systems", "C Programming", "Circuit Design"],
+                interests: ["IoT", "Embedded Systems", "Hardware Design"],
+                sessionsCompleted: 78,
+                responseTime: "< 3 hours",
+                connectionStatus: "available"
+            },
+            {
+                id: 11,
+                name: "Michael Brown",
+                university: "Stanford",
+                year: "Graduate",
+                major: "Bioengineering",
+                avatar: "avatar (1).svg",
+                rating: 4.7,
+                reviewCount: 41,
+                status: "online",
+                bio: "Bioengineering PhD student working on medical device development.",
+                subjects: ["Bioengineering", "Biology", "Chemistry", "Medical Physics"],
+                interests: ["Medical Devices", "Biomedical Research", "Healthcare"],
+                sessionsCompleted: 92,
+                responseTime: "< 1 hour",
+                connectionStatus: "available"
+            },
+            {
+                id: 12,
+                name: "Fatima Al-Rashid",
+                university: "NIT Trichy",
+                year: "Senior",
+                major: "Information Technology",
+                avatar: "avatar (2).svg",
+                rating: 4.8,
+                reviewCount: 58,
+                status: "online",
+                bio: "Full-stack developer with expertise in cloud technologies and DevOps.",
+                subjects: ["Cloud Computing", "DevOps", "Web Development", "Python"],
+                interests: ["Cloud Architecture", "DevOps", "Automation"],
+                sessionsCompleted: 134,
+                responseTime: "< 45 min",
+                connectionStatus: "pending"
+            }
+        ];
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let starsHTML = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="ri-star-fill star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                starsHTML += '<i class="ri-star-half-fill star"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                starsHTML += '<i class="ri-star-line star empty"></i>';
+            }
+            
+            return starsHTML;
+        }
+
+        function getConnectionButtonText(status) {
+            switch (status) {
+                case 'connected': return 'Connected';
+                case 'pending': return 'Pending';
+                default: return 'Connect';
+            }
+        }
+
+        function renderPeers(peersToRender = peers) {
+            const container = document.getElementById('peersContainer');
+            container.innerHTML = peersToRender.map(peer => `
+                <div class="peer-card">
+                    <div class="peer-status ${peer.status}"></div>
+                    <div class="profile" style="margin-bottom: 1rem;">
+                        <div class="image">
+                            <img src="${peer.avatar}" alt="${peer.name}">
+                        </div>
+                        <div class="n1-b1-p1-img1">
+                            <p style="font-weight: 600;">${peer.name}</p>
+                            <p class="student-info">${peer.major}, ${peer.year}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                        <span class="university-tag">${peer.university}</span>
+                        <span class="year-tag">${peer.year}</span>
+                    </div>
+                    
+                    <div class="peer-rating">
+                        <div class="stars">${generateStars(peer.rating)}</div>
+                        <span style="font-size: 0.8rem; color: #6b7280;">${peer.rating} (${peer.reviewCount} reviews)</span>
+                    </div>
+                    
+                    <p class="peer-bio">${peer.bio}</p>
+                    
+                    <div class="skills" style="margin-top: 1rem;">
+                        ${peer.subjects.slice(0, 3).map(subject => `<p>${subject}</p>`).join('')}
+                    </div>
+                    
+                    <div class="peer-interests">
+                        ${peer.interests.map(interest => `<span class="interest-tag">${interest}</span>`).join('')}
+                    </div>
+                    
+                    <div class="peer-stats">
+                        <span><i class="ri-book-read-line"></i> ${peer.sessionsCompleted} sessions</span>
+                        <span><i class="ri-time-line"></i> ${peer.responseTime}</span>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <button class="contact-btn" title="Message">
+                            <i class="ri-message-3-line"></i>
+                        </button>
+                        <button class="contact-btn" title="Video Call">
+                            <i class="ri-video-line"></i>
+                        </button>
+                        <button class="contact-btn" title="Schedule Session">
+                            <i class="ri-calendar-line"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="connect-btn ${peer.connectionStatus}" onclick="toggleConnection(${peer.id})">
+                        ${getConnectionButtonText(peer.connectionStatus)}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function filterPeers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const universityFilter = document.getElementById('universityFilter').value;
+            const yearFilter = document.getElementById('yearFilter').value;
+            const subjectFilter = document.getElementById('subjectFilter').value;
+
+            const filteredPeers = peers.filter(peer => {
+                const matchesSearch = peer.name.toLowerCase().includes(searchTerm) || 
+                                    peer.bio.toLowerCase().includes(searchTerm) ||
+                                    peer.major.toLowerCase().includes(searchTerm);
+                const matchesUniversity = !universityFilter || peer.university === universityFilter;
+                const matchesYear = !yearFilter || peer.year === yearFilter;
+                const matchesSubject = !subjectFilter || peer.subjects.includes(subjectFilter);
+                
+                return matchesSearch && matchesUniversity && matchesYear && matchesSubject;
+            });
+
+            renderPeers(filteredPeers);
+        }
+
+        function toggleConnection(peerId) {
+            const peer = peers.find(p => p.id === peerId);
+            if (peer) {
+                switch (peer.connectionStatus) {
+                    case 'available':
+                        peer.connectionStatus = 'pending';
+                        break;
+                    case 'pending':
+                        peer.connectionStatus = 'connected';
+                        break;
+                    case 'connected':
+                        peer.connectionStatus = 'available';
+                        break;
+                }
+                renderPeers();
+            }
+        }
+
+        // Initial render
+        renderPeers();
+    </script>
+</body>
+</html>
