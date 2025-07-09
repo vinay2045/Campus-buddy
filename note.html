@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Sharing - Campus Buddy</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/note.css">
     <script src="script.js"></script>
     <link
         href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
@@ -14,193 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
     <style>
-        .form-container {
-            background-color: #fff;
-            padding: 2rem;
-            border: 1px solid gray;
-            border-radius: 0rem;
-            margin-bottom: 2rem;
-            display: none;
-        }
         
-        .form-container.active {
-            display: block;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #1F2937;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0rem;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.9rem;
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-        
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0rem;
-            font-family: "JetBrains Mono", monospace;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .btn-primary {
-            background-color: #1F2937;
-            color: #ffffff;
-        }
-        
-        .btn-secondary {
-            background-color: #6B7280;
-            color: #ffffff;
-        }
-        
-        .btn-danger {
-            background-color: #DC2626;
-            color: #ffffff;
-        }
-        
-        .btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .notes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .note-card {
-            background-color: #fff;
-            padding: 2rem;
-            border: 1px solid gray;
-            border-radius: 0rem;
-            position: relative;
-        }
-        
-        .note-actions {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-        
-        .note-actions button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.25rem;
-            border-radius: 50%;
-            transition: background-color 0.2s ease;
-        }
-        
-        .note-actions button:hover {
-            background-color: #f3f4f6;
-        }
-        
-        .note-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #6B7280;
-        }
-        
-        .subject-tag {
-            background-color: #F3F4F6;
-            padding: 0.25rem 0.75rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            align-items: center;
-        }
-        
-        .search-filter input,
-        .search-filter select {
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0rem;
-            font-family: "JetBrains Mono", monospace;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 0rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .close {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #6B7280;
-        }
-        
-        .close:hover {
-            color: #1F2937;
-        }
     </style>
 </head>
 <body>
@@ -311,7 +126,7 @@
                     
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="cancelForm()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Note</button>
+                        <button type="submit" class="createnew">Save Note</button>
                     </div>
                 </form>
             </div>
@@ -493,7 +308,7 @@
                             <span class="subject-tag">${note.type}</span>
                             <span>By ${note.author} • ${note.date}</span>
                         </div>
-                        <p style="margin-bottom: 1rem;"><strong>Description:</strong> ${note.description}</p>
+                        <p class= "description-short" style="margin-bottom: 1rem;"><strong>Description:</strong> ${note.description}</p>
                         <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 4px; white-space: pre-wrap; font-family: monospace;">${note.content}</div>
                         <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.9rem; color: #6B7280;">
                             <span><i class="ri-heart-line"></i> ${note.likes} likes</span>
@@ -546,7 +361,7 @@
                         </div>
                         <p>${note.author}</p>
                     </div>
-                    <p style="margin-bottom: 1rem; color: #6B7280;">${note.description}</p>
+                    <p style="margin-bottom: 1rem;">${note.description}</p>
                     <div class="note-meta">
                         <div style="display: flex; gap: 0.5rem;">
                             <span class="subject-tag">${note.subject}</span>
@@ -554,7 +369,7 @@
                         </div>
                         <span>${note.date}</span>
                     </div>
-                    <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.8rem; color: #6B7280;">
+                    <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 0.8rem;  color: var(--text-main); cursor:pointer;">
                         <span><i class="ri-heart-line"></i> ${note.likes}</span>
                         <span><i class="ri-download-line"></i> ${note.downloads}</span>
                     </div>

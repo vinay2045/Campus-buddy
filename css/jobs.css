@@ -1,0 +1,80 @@
+  .apply-btn {
+            background-color: #1F2937;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .apply-btn:hover {
+            background-color: #374151;
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .apply-btn-small {
+            background-color: #1F2937;
+            color: #ffffff;
+            padding: 0.3rem 0.8rem;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            font-size: 0.7rem;
+            border-radius: 0.2rem;
+        }
+
+        .apply-btn-small:hover {
+            background-color: #374151;
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .n1-b1-p2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .n1-b1-p2 p {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .skills {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .skills p {
+            font-size: 0.7rem;
+            background-color:var(--student-info);
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        /* Icon colors for stats */
+        .p2 .b1:nth-child(1) .b1-p2 span i {
+            background-color: #e0edff;
+            color: #397be7;
+        }
+
+        .p2 .b1:nth-child(2) .b1-p2 span i {
+            background-color: #d2f3e7;
+            color: #1f9e63;
+        }
+
+        .p2 .b1:nth-child(3) .b1-p2 span i {
+            background-color: #fdf3da;
+            color: #c48800;
+        }
+
+        .p2 .b1:nth-child(4) .b1-p2 span i {
+            background-color: #f3e8ff;
+            color: #9333ea;
+        }
