@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Buddy Dashboard</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+        rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        @import "https://unpkg.com/open-props/easings.min.css";
+        
+        /* Theme Variables */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --text-muted: #adb5bd;
+            --border: #dee2e6;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --accent: #007bff;
+            --accent-hover: #0056b3;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --sidebar-bg: #2c3e50;
+            --sidebar-text: #ecf0f1;
+            --sidebar-hover: #34495e;
+            --card-bg: #ffffff;
+            --icon-fill: #6c757d;
+            --icon-fill-hover: #007bff;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #8a8a8a;
+            --border: #404040;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --accent: #4dabf7;
+            --accent-hover: #339af0;
+            --success: #51cf66;
+            --warning: #ffd43b;
+            --danger: #ff6b6b;
+            --sidebar-bg: #1a1a1a;
+            --sidebar-text: #ffffff;
+            --sidebar-hover: #2d2d2d;
+            --card-bg: #1e1e1e;
+            --icon-fill: #b3b3b3;
+            --icon-fill-hover: #4dabf7;
+        }
+
+        /* Theme Toggle Button Styles */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .sun-and-moon > :is(.moon, .sun, .sun-beams) {
+            transform-origin: center;
+        }
+
+        .sun-and-moon > :is(.moon, .sun) {
+            fill: var(--icon-fill);
+        }
+
+        .theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
+            fill: var(--icon-fill-hover);
+        }
+
+        .sun-and-moon > .sun-beams {
+            stroke: var(--icon-fill);
+            stroke-width: 2px;
+        }
+
+        .theme-toggle:is(:hover, :focus-visible) .sun-and-moon > .sun-beams {
+            stroke: var(--icon-fill-hover);
+        }
+
+        [data-theme="dark"] .sun-and-moon > .sun {
+            transform: scale(1.75);
+        }
+
+        [data-theme="dark"] .sun-and-moon > .sun-beams {
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .sun-and-moon > .moon > circle {
+            transform: translateX(-7px);
+        }
+
+        @supports (cx: 1) {
+            [data-theme="dark"] .sun-and-moon > .moon > circle {
+                cx: 17;
+                transform: translateX(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            .sun-and-moon > .sun {
+                transition: transform .5s var(--ease-elastic-3);
+            }
+
+            .sun-and-moon > .sun-beams {
+                transition: transform .5s var(--ease-elastic-4), opacity .5s var(--ease-3);
+            }
+
+            .sun-and-moon .moon > circle {
+                transition: transform .25s var(--ease-out-5);
+            }
+
+            @supports (cx: 1) {
+                .sun-and-moon .moon > circle {
+                    transition: cx .25s var(--ease-out-5);
+                }
+            }
+
+            [data-theme="dark"] .sun-and-moon > .sun {
+                transition-timing-function: var(--ease-3);
+                transition-duration: .25s;
+                transform: scale(1.75);
+            }
+
+            [data-theme="dark"] .sun-and-moon > .sun-beams {
+                transition-duration: .15s;
+                transform: rotateZ(-25deg);
+            }
+
+            [data-theme="dark"] .sun-and-moon > .moon > circle {
+                transition-duration: .5s;
+                transition-delay: .25s;
+            }
+        }
+
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .main {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar .p1 {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar .appname {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--sidebar-text);
+        }
+
+        .sidebar .p2 {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .sidebar .p2 a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar .p2 a:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+        .sidebar .p2 a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .sidebar .p3 {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background: var(--bg-secondary);
+            transition: background-color 0.3s ease;
+        }
+
+        .content .p1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .content .p1 h3 {
+            color: var(--text-primary);
+            font-size: 24px;
+        }
+
+        .content .p1 button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .content .p1 button:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Stats Cards */
+        .p2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .b1 {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .b1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .b1-p1 p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .b1-p1 h3 {
+            color: var(--text-primary);
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .b1-p2 span {
+            background: var(--bg-tertiary);
+            padding: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        /* Notes Section */
+        .p3 {
+            margin-bottom: 30px;
+        }
+
+        .p3-b1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .p3-b1 h3 {
+            color: var(--text-primary);
+            font-size: 20px;
+        }
+
+        .p3-b1 a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .notes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .n1-b1 {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .n1-b1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .n1-b1-p1 {
+            margin-bottom: 15px;
+        }
+
+        .n1-b1-p1 h4 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+        }
+
+        .profile p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .n1-b1-p1 > p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .n1-b1-p2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .n1-b1-p2 p {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .n1-b1-p2 a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Assignments Table */
+        .p4 {
+            margin-bottom: 30px;
+        }
+
+        .p4-b1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .p4-b1 h3 {
+            color: var(--text-primary);
+            font-size: 20px;
+        }
+
+        .p4-b1 a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .assignment-table-wrapper {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .assignment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .assignment-table th,
+        .assignment-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .assignment-table th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .assignment-table td {
+            color: var(--text-secondary);
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status.in-progress {
+            background: var(--warning);
+            color: #000;
+        }
+
+        .status.not-started {
+            background: var(--danger);
+            color: white;
+        }
+
+        .status.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .assignment-table td i {
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Study Buddies */
+        .p5-b1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .p5-b1 h3 {
+            color: var(--text-primary);
+            font-size: 20px;
+        }
+
+        .p5-b1 a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .buddies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .b1-b1 {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .b1-b1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .n1-b1-p1-img1 p:first-child {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .student-info {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .skills {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .skills p {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .b1-b1 button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .b1-b1 button:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .p2 {
+                grid-template-columns: 1fr;
+            }
+
+            .notes {
+                grid-template-columns: 1fr;
+            }
+
+            .buddies {
+                grid-template-columns: 1fr;
+            }
+
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="auto" aria-live="polite">
+        <svg class="sun-and-moon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+            <mask class="moon" id="moon-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <circle cx="24" cy="10" r="6" fill="black" />
+            </mask>
+            <circle class="sun" cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
+            <g class="sun-beams" stroke="currentColor">
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </g>
+        </svg>
+    </button>
+
+    <div class="main">
+        <div class="sidebar">
+            <div class="p1">
+                <h2 class="appname">Campus Buddy</h2>
+            </div>
+            <div class="p2">
+                <a href="index.html"><span><i class="ri-home-2-line"></i> Dashboard</span></a>
+                <a href="note.html"><span><i class="ri-booklet-fill"></i> Note Sharing</span></a>
+                <a href="assign.html"><span><i class="ri-calendar-todo-fill"></i> AssignmentTracker</span></a>
+                <a href="peer.html"><span><i class="ri-team-line"></i> Peer Connect</span></a>
+                <a href="mentorship.html"><span><i class="ri-graduation-cap-fill"></i> Mentorship</span></a>
+                <a href="jobs.html"><span><i class="ri-terminal-line"></i> Jobs & Internships</span></a>
+            </div>
+            <div class="p3">
+                <p>© 2025 Campus Buddy</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="p1">
+                <h3>Welcome back, Vinay Sriramoju</h3>
+                <button>Create New</button>
+            </div>
+
+            <div class="p2">
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Pending Tasks</p>
+                        <h3>4</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-list-check-3"></i></span>
+                    </div>
+                </div>
+
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Notes Shared</p>
+                        <h3>12</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-book-read-line"></i></span>
+                    </div>
+                </div>
+
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Mentored Peers</p>
+                        <h3>14</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-pass-pending-line"></i></span>
+                    </div>
+                </div>
+
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Doubts Cleared</p>
+                        <h3>40</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-question-mark"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p3">
+                <div class="p3-b1">
+                    <h3>Recent Notes</h3>
+                    <a href="">View All</a>
+                </div>
+
+                <div class="notes">
+                    <div class="n1-b1">
+                        <div class="n1-b1-p1">
+                            <h4>DSA - Linked List</h4>
+                            <div class="profile">
+                                <div class="image">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM0Mzg1ZjQiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo="                                     <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMxMGI5ODEiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo=" alt="Avatar">
+                                </div>
+                                <p>Vinay Sriramoju</p>
+                            </div>
+                            <p>React hooks explained with practical examples and best practices for state management.</p>
+                        </div>
+                        <div class="n1-b1-p2">
+                            <p>May 15, 2025</p>
+                            <a href="">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p4">
+                <div class="p4-b1">
+                    <h3>Upcoming Assignments</h3>
+                    <a href="">View All</a>
+                </div>
+
+                <div class="assignment-table-wrapper">
+                    <table class="assignment-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Assignment</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Data Structures</td>
+                                <td>Implement Binary Search Tree</td>
+                                <td>July 10, 2025</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td><i class="ri-eye-line"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Algorithms</td>
+                                <td>Analysis of Sorting Algorithms</td>
+                                <td>July 15, 2025</td>
+                                <td><span class="status not-started">Not Started</span></td>
+                                <td><i class="ri-eye-line"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Web Development</td>
+                                <td>Build a React Portfolio</td>
+                                <td>July 20, 2025</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td><i class="ri-eye-line"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p5">
+                <div class="p5-b1">
+                    <h3>Study Buddies</h3>
+                    <a href="">View All</a>
+                </div>
+                <div class="buddies">
+                    <div class="b1-b1">
+                        <div class="n1-b1-p1">
+                            <div class="profile">
+                                <div class="image">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNmZjU1OTMiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo=" alt="Avatar">
+                                </div>
+                                <div class="n1-b1-p1-img1">
+                                    <p>Chitti</p>
+                                    <p class="student-info">Computer Science, Senior</p>
+                                </div>
+                            </div>
+                            <div class="skills">
+                                <p>Data Structures</p>
+                                <p>Algorithms</p>
+                                <p>Python</p>
+                            </div>
+                        </div>
+                        <button>Connect</button>
+                    </div>
+
+                    <div class="b1-b1">
+                        <div class="n1-b1-p1">
+                            <div class="profile">
+                                <div class="image">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiM0Mzg1ZjQiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo=" alt="Avatar">
+                                </div>
+                                <div class="n1-b1-p1-img1">
+                                    <p>Vinay Sriramoju</p>
+                                    <p class="student-info">Computer Science, Senior</p>
+                                </div>
+                            </div>
+                            <div class="skills">
+                                <p>Data Structures</p>
+                                <p>Algorithms</p>
+                                <p>Python</p>
+                            </div>
+                        </div>
+                        <button>Connect</button>
+                    </div>
+
+                    <div class="b1-b1">
+                        <div class="n1-b1-p1">
+                            <div class="profile">
+                                <div class="image">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMxMGI5ODEiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo=" alt="Avatar">
+                                </div>
+                                <div class="n1-b1-p1-img1">
+                                    <p>Vaishnav Oruganti</p>
+                                    <p class="student-info">Computer Science, Senior</p>
+                                </div>
+                            </div>
+                            <div class="skills">
+                                <p>Data Structures</p>
+                                <p>Algorithms</p>
+                                <p>Python</p>
+                            </div>
+                        </div>
+                        <button>Connect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const storageKey = 'theme-preference';
+
+        const onClick = () => {
+            // flip current value
+            theme.value = theme.value === 'light' ? 'dark' : 'light';
+            setPreference();
+        };
+
+        const getColorPreference = () => {
+            const saved = localStorage.getItem(storageKey);
+            if (saved) return saved;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+
+        const setPreference = () => {
+            localStorage.setItem(storageKey, theme.value);
+            reflectPreference();
+        };
+
+        const reflectPreference = () => {
+            document.documentElement.setAttribute('data-theme', theme.value);
+            
+            const button = document.querySelector('#theme-toggle');
+            if (button) {
+                button.setAttribute('aria-label', theme.value);
+            }
+        };
+
+        const theme = {
+            value: getColorPreference(),
+        };
+
+        // set early so no page flashes / CSS is made aware
+        reflectPreference();
+
+        window.addEventListener('load', () => {
+            // set on load so screen readers can see latest value on the button
+            reflectPreference();
+
+            // now this script can find and listen for clicks on the control
+            const themeToggle = document.querySelector('#theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', onClick);
+            }
+        });
+
+        // sync with system changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({matches: isDark}) => {
+            theme.value = isDark ? 'dark' : 'light';
+            setPreference();
+        });
+    </script>
+</body>
+</html>
+                                </div>
+                                <p>Vinay Sriramoju</p>
+                            </div>
+                            <p>Concise pointers and visuals for Linked List implementation, traversal and common operations.</p>
+                        </div>
+                        <div class="n1-b1-p2">
+                            <p>May 15, 2025</p>
+                            <a href="">View</a>
+                        </div>
+                    </div>
+
+                    <div class="n1-b1">
+                        <div class="n1-b1-p1">
+                            <h4>Linear Algebra</h4>
+                            <div class="profile">
+                                <div class="image">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNmZjU1OTMiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo=" alt="Avatar">
+                                </div>
+                                <p>Ankitha</p>
+                            </div>
+                            <p>Complete matrix operations with examples and practice problems for the midterm exam.</p>
+                        </div>
+                        <div class="n1-b1-p2">
+                            <p>May 15, 2025</p>
+                            <a href="">View</a>
+                        </div>
+                    </div>
+
+                    <div class="n1-b1">
+                        <div class="n1-b1-p1">
+                            <h4>Web Development</h4>
+                            <div class="profile">
+                                <div class="image">
+                                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiMxMGI5ODEiLz4KPHN2ZyB4PSI4IiB5PSI4IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyQzE0LjIwOTEgMTIgMTYgMTAuMjA5MSAxNiA4QzE2IDUuNzkwODYgMTQuMjA5MSA0IDEyIDRDOS43OTA4NiA0IDggNS43OTA4NiA4IDhDOCAxMC4yMDkxIDkuNzkwODYgMTIgMTIgMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNCAyMEM0IDE2LjY4NjMgNy4xMzQwMSAxNCA2IDEyIDEyIDEwLjg5NTQgMTIgMTEuMTA0NiAxMiAxMkMxNi44NjYgMTQgMjAgMTYuNjg2MyAyMCAyMEg0WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cjwvc3ZnPgo="

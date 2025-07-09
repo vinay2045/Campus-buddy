@@ -1,3 +1,159 @@
+@import "https://unpkg.com/open-props/easings.min.css";
+:root {
+      --icon-fill: #444;
+      --icon-fill-hover: #000;
+      --bg-main: #ffffff;
+      --bg-sidebar: #ffffff;
+      --content:#f8f8f8;
+      --createnew:black;
+      --bg-card: #ffffff;
+      --text-main: #111111;
+      --student-info:#F3F4F6;
+      --text-secondary: #555555;
+      --border-color: #ccc;
+      --hover-bg: rgba(0, 0, 0, 0.05);
+  --hover-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+
+   --in-progress-bg: #e0edff;
+  --in-progress-color: #397be7;
+  --not-started-bg: #fdf3da;
+  --not-started-color: #c48800;
+  --completed-bg: #d2f3e7;
+  --completed-color: #1f9e63;
+  
+     --badge1-bg: #e0edff;
+  --badge1-color: #397be7;
+
+  --badge2-bg: #fdf3da;
+  --badge2-color: #c48800;
+
+  --badge3-bg: #d2f3e7;
+  --badge3-color: #1f9e63;
+
+  --badge4-bg: #e0edff;
+  --badge4-color: #397be7;
+    }
+
+    [data-theme="dark"] {
+      --icon-fill: #ddd;
+      --icon-fill-hover: #fff;
+      --bg-main: #1a1a1a;
+      --content:#1a1a1a;
+      --createnew:gray;
+      --student-info:grey;
+      --bg-sidebar: #121212;
+      --bg-card: #222222;
+      --text-main: #eeeeee;
+      --text-secondary: #aaaaaa;
+      --border-color: #444;
+       --hover-bg: rgba(255, 255, 255, 0.08);
+  --hover-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.3);
+
+   --in-progress-bg: #2a3b4d;
+  --in-progress-color: #82b7ff;
+  --not-started-bg: #3a2f1f;
+  --not-started-color: #ffcc66;
+  --completed-bg: #1f3a2e;
+  --completed-color: #76e6c3;
+   --badge1-bg: #2a3b4d;
+  --badge1-color: #82b7ff;
+
+  --badge2-bg: #3a2f1f;
+  --badge2-color: #ffcc66;
+
+  --badge3-bg: #1f3a2e;
+  --badge3-color: #76e6c3;
+
+  --badge4-bg: #2a3b4d;
+  --badge4-color: #82b7ff;   
+    }
+
+
+.theme-toggle {
+  margin-left: 18rem;
+  background: none;
+  
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.sun-and-moon > :is(.moon, .sun, .sun-beams) {
+  transform-origin: center;
+}
+
+.sun-and-moon > :is(.moon, .sun) {
+  fill: var(--icon-fill);
+}
+
+.theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
+  fill: var(--icon-fill-hover);
+}
+
+.sun-and-moon > .sun-beams {
+  stroke: var(--icon-fill);
+  stroke-width: 2px;
+}
+
+.theme-toggle:is(:hover, :focus-visible) .sun-and-moon > .sun-beams {
+  stroke: var(--icon-fill-hover);
+}
+
+[data-theme="dark"] .sun-and-moon > .sun {
+  transform: scale(1.75);
+}
+
+[data-theme="dark"] .sun-and-moon > .sun-beams {
+  opacity: 0;
+}
+
+[data-theme="dark"] .sun-and-moon > .moon > circle {
+  transform: translateX(-7px);
+}
+
+@supports (cx: 1) {
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    cx: 17;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sun-and-moon > .sun {
+    transition: transform .5s var(--ease-elastic-3);
+  }
+
+  .sun-and-moon > .sun-beams {
+    transition: transform .5s var(--ease-elastic-4), opacity .5s var(--ease-3);
+  }
+
+  .sun-and-moon .moon > circle {
+    transition: transform .25s var(--ease-out-5);
+  }
+
+  @supports (cx: 1) {
+    .sun-and-moon .moon > circle {
+      transition: cx .25s var(--ease-out-5);
+    }
+  }
+
+  [data-theme="dark"] .sun-and-moon > .sun {
+    transition-timing-function: var(--ease-3);
+    transition-duration: .25s;
+    transform: scale(1.75);
+  }
+
+  [data-theme="dark"] .sun-and-moon > .sun-beams {
+    transition-duration: .15s;
+    transform: rotateZ(-25deg);
+  }
+
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    transition-duration: .5s;
+    transition-delay: .25s;
+  }
+}
+
 *{
     margin:0;
     padding: 0;
@@ -13,16 +169,22 @@ a{
     cursor: pointer;
     padding: .3rem .5rem;
 }
-a:hover{
- 
-
- background-color: #f0f0f0; /* Light hover background like ChatGPT */
-  border-radius: 0rem;
-  transform: scale(1.02);
-  color: #000; /* Optional: stay black or set highlight */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-
+.content a:hover{
+   background-color: var(--hover-bg);
+  color: var(--icon-fill-hover);
+  
+  box-shadow: var(--hover-shadow);
+  transform: translateX(2px);
 }
+.sidebar .p2 a:hover {
+  background-color: var(--hover-bg);
+  color: var(--icon-fill-hover);
+  border-radius: 0.5rem;
+  box-shadow: var(--hover-shadow);
+  transform: translateX(2px);
+ 
+}
+
 .appname{
     font-size: 1.8rem;
 }
@@ -35,11 +197,17 @@ a:hover{
 }
 .sidebar{
     width:20%;
-    background-color: #ffffff;
+    background-color: var(--bg-sidebar);
+    color: var(--text-main);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 100;
     display: flex;
     flex-direction: column;
     gap:1rem;
-    min-height: 100vh;
+   
     padding: 3rem;
 }
 .content{
@@ -47,14 +215,20 @@ a:hover{
     padding-top: 6rem;
     padding-right: 2rem;
     padding-bottom: 3rem;
+   
+    margin-left: 20%;
+
+    color: var(--text-main);
 
     width:80%;
-    background-color: #F8F8F8;
+     background-color: var(--content);
+    
      display: flex;
     flex-direction: column;
     
     height: 100%;
 }
+
 .sidebar .p2{
       display: flex;
     flex-direction: column;
@@ -72,12 +246,21 @@ a:hover{
 .content .p1 h3{
     font-size: 2rem;
 }
-.content .p1 button{
-    background-color: #1F2937;
-    color: #ffffff;
+.content .p1 .createnew{
+    background-color: var(--bg-card);
+   color: var(--text-main);
     padding: 1rem 1rem;
+    border: 1px solid var(--createnew);
    font-family: "JetBrains Mono", monospace;
    font-weight: 500;
+  
+}
+.content .p1 .createnew:hover{
+ background-color: var(--hover-bg);
+  color: var(--icon-fill-hover);
+  
+  box-shadow: var(--hover-shadow);
+  
 }
 .p2{
     margin-top: 3rem;
@@ -86,7 +269,9 @@ a:hover{
     gap: 1rem;
 }
 .content .p2 .b1{
-    background-color: white;
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
     padding: 1rem 2rem;
     border-radius: 0rem;
     border: 1px solid gray;
@@ -100,7 +285,8 @@ a:hover{
     font-size: 1.6rem;
 }
 .n1-b1{
-    background-color: #fff;
+   background-color: var(--bg-card);
+    color: var(--text-main);
    display: flex;
     flex-direction: column;
     padding: 2rem;
@@ -181,7 +367,9 @@ a:hover{
 }
 
 .assignment-table-wrapper {
-  background: #ffffff;
+    background-color: var(--bg-card);
+      color: var(--text-main);
+
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   overflow-x: auto;
@@ -199,7 +387,7 @@ a:hover{
   font-weight: 600;
   padding: 12px 16px;
   font-size: 14px;
-  color: #555;
+   color: var(--text-main);
 }
 
 .assignment-table td {
@@ -207,7 +395,7 @@ a:hover{
   font-size: 15px;
   border-radius: 8px;
   vertical-align: middle;
-  color: #222;
+   color: var(--text-main);
 }
 
 .assignment-table td:first-child {
@@ -231,18 +419,18 @@ a:hover{
 }
 
 .in-progress {
-  background-color: #e0edff;
-  color: #397be7;
+  background-color:var(--in-progress-bg);
+  color: var(--in-progress-color);
 }
 
 .not-started {
-  background-color: #fdf3da;
-  color: #c48800;
+  background-color:var(--not-started-bg);
+  color: var(--not-started-color);
 }
 
 .completed {
-  background-color: #d2f3e7;
-  color: #1f9e63;
+  background-color: var(--completed-bg);
+  color: var(--completed-color);
 }
 
 /* Icon Styles */
@@ -260,17 +448,17 @@ a:hover{
     gap: 1rem;
 }
 .b1-b1{
-    background-color: #fff;
+   background-color: var(--bg-card);
    display: flex;
     flex-direction: column;
     padding: 2rem;
     gap: 1rem;
     border-radius: 1rem;
-    border: 1px solid gray;
+    border: 1px solid var(--border-color);
 }
 .student-info{
     font-size: .8rem;
-    color: gray;
+    color: var(--text-main);
     font-weight: 600;
 }
 .skills{
@@ -279,50 +467,53 @@ a:hover{
 }
 .skills p{
     font-size: .7rem;
-    background-color:#F3F4F6;
+    color: var(--text-main);
+
+    background-color:var(--student-info);
     padding: .2rem .5rem;
     border-radius: 1rem;
 }
 .b1-b1 button{
-    background-color: #fff;
+    background-color: var(--bg-card);
     padding: .5rem 2rem;
     
     border: 1px solid gray;
     cursor: pointer;
-    color: black;
+     color: var(--text-main);
     font-size: .8rem;
     font-weight: 500;
 }
 .b1-b1 button:hover{
- background-color: #f0f0f0; /* Light hover background like ChatGPT */
-  border-radius: 0rem;
-  transform: scale(1.02);
-  color: #000; /* Optional: stay black or set highlight */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background-color: var(--hover-bg);
+  color: var(--icon-fill-hover);
+  
+  box-shadow: var(--hover-shadow);
+  transform: translateX(2px);
 }
 button{
     cursor: pointer;
 }
 /* General icon container styling */
 .p2 .b1:nth-child(1) .b1-p2 span i {
-  background-color: #e0edff;
-  color: #397be7;
+  background-color: var(--badge1-bg);
+  color: var(--badge1-color);
 }
 
 .p2 .b1:nth-child(2) .b1-p2 span i {
-  background-color: #fdf3da;
-  color: #c48800;
+  background-color: var(--badge2-bg);
+  color: var(--badge2-color);
 }
 
 .p2 .b1:nth-child(3) .b1-p2 span i {
-  background-color: #d2f3e7;
-  color: #1f9e63;
+  background-color: var(--badge3-bg);
+  color: var(--badge3-color);
 }
 
 .p2 .b1:nth-child(4) .b1-p2 span i {
-  background-color: #e0edff;
-  color: #397be7;
+  background-color: var(--badge4-bg);
+  color: var(--badge4-color);
 }
+
 
 /* Optional: Make it look like a rounded badge */
 .p2 .b1-p2 span i {

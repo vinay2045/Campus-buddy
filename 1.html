@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Buddy Dashboard</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+        rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.44.0/apexcharts.min.js"></script>
+    <style>
+        /* Dark Mode Variables */
+:root {
+  --icon-fill: #666;
+  --icon-fill-hover: #000;
+}
+
+[data-theme="dark"] {
+  --icon-fill: #fbbf24;
+  --icon-fill-hover: #f59e0b;
+}
+
+/* Dark Mode Styles */
+[data-theme="dark"] body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .main {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .sidebar {
+  background-color: #1e293b;
+  border-right: 1px solid #334155;
+}
+
+[data-theme="dark"] .sidebar a:hover {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .content {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .content .p1 h3 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .content .p1 button {
+  background-color: #374151;
+  color: #e2e8f0;
+  border: 1px solid #4b5563;
+}
+
+[data-theme="dark"] .content .p1 button:hover {
+  background-color: #4b5563;
+}
+
+[data-theme="dark"] .content .p2 .b1 {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .n1-b1 {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .n1-b1 h4 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .n1-b1 p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .n1-b1 a {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .n1-b1 a:hover {
+  color: #3b82f6;
+  background-color: #334155;
+}
+
+[data-theme="dark"] .assignment-table-wrapper {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+[data-theme="dark"] .assignment-table th {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .assignment-table td {
+  color: #e2e8f0;
+  background-color: #334155;
+}
+
+[data-theme="dark"] .assignment-table tr:hover td {
+  background-color: #475569;
+}
+
+[data-theme="dark"] .ri-eye-line {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .ri-eye-line:hover {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .b1-b1 {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .b1-b1 h4,
+[data-theme="dark"] .b1-b1 p {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .student-info {
+  color: #94a3b8 !important;
+}
+
+[data-theme="dark"] .skills p {
+  background-color: #374151;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .b1-b1 button {
+  background-color: #374151;
+  border: 1px solid #4b5563;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .b1-b1 button:hover {
+  background-color: #4b5563;
+  border-color: #6b7280;
+}
+
+[data-theme="dark"] .chart-container {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+}
+
+[data-theme="dark"] .chart-title {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .charts-header h3 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .p3 h3,
+[data-theme="dark"] .p4 h3,
+[data-theme="dark"] .p5 h3 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .p3-b1 a,
+[data-theme="dark"] .p4-b1 a,
+[data-theme="dark"] .p5-b1 a {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .p3-b1 a:hover,
+[data-theme="dark"] .p4-b1 a:hover,
+[data-theme="dark"] .p5-b1 a:hover {
+  color: #3b82f6;
+  background-color: #334155;
+}
+
+/* Dark mode status badges */
+[data-theme="dark"] .status.in-progress {
+  background-color: #1e3a8a;
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .status.not-started {
+  background-color: #92400e;
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .status.completed {
+  background-color: #065f46;
+  color: #6ee7b7;
+}
+
+/* Theme toggle button styling */
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+        *{
+            margin:0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            min-height: 100vh;
+            width:100%
+           
+        }
+        a{
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            padding: .3rem .5rem;
+        }
+        a:hover{
+            background-color: #f0f0f0;
+            border-radius: 0rem;
+            transform: scale(1.02);
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .appname{
+            font-size: 1.8rem;
+        }
+
+        .main{
+            min-height:100vh;
+            width:100%;
+            display: flex;
+            font-family: "JetBrains Mono", monospace;
+        }
+        .sidebar{
+            width:20%;
+            background-color: #ffffff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap:1rem;
+            padding: 3rem;
+        }
+        .content{
+            padding-left: 6rem;
+            padding-top: 6rem;
+            padding-right: 2rem;
+            padding-bottom: 3rem;
+            margin-left: 20%;
+            width:80%;
+            background-color: #F8F8F8;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .sidebar .p2{
+            display: flex;
+            flex-direction: column;
+            gap: 1.3rem;
+            margin: 0;
+        }
+        .sidebar .p3{
+            margin-top: auto;
+            font-size: 0.8rem;
+        }
+        .content .p1{
+            display: flex;
+            justify-content: space-between;
+        }
+        .content .p1 h3{
+            font-size: 2rem;
+        }
+        .content .p1 button{
+            background-color: #1F2937;
+            color: #ffffff;
+            padding: 1rem 1rem;
+            font-family: "JetBrains Mono", monospace;
+            font-weight: 500;
+        }
+        .p2{
+            margin-top: 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .content .p2 .b1{
+            background-color: white;
+            padding: 1rem 2rem;
+            border-radius: 0rem;
+            border: 1px solid gray;
+            display: flex;
+            justify-content: space-between;
+            opacity: .8;
+            gap: 2rem;
+            align-items: center;
+        }
+        .content .p2 .b1 span i{
+            font-size: 1.6rem;
+        }
+        .n1-b1{
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            gap: 1rem;
+            border: 1px solid gray;
+        }
+        .profile{
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .profile .image{
+            height: 30px;
+            width: 30px;
+        }
+        .profile .image img{
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+        }
+        .n1-b1-p1{
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .n1-b1-p2{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notes{
+            display: flex;
+            gap: 1rem;
+        }
+        .content .p3 h3{
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            font-size: 1.5em;
+        }
+        .p3-b1{
+            display: flex;
+            align-items:center;
+            justify-content: space-between;
+        }
+        .content .p4{
+            display: flex;
+            flex-direction: column;
+        }
+        .p4-b1{
+            display: flex;
+            align-items:center;
+            justify-content: space-between;
+        }
+        .p5-b1{
+            display: flex;
+            align-items:center;
+            justify-content: space-between;
+        }
+        .content .p4 h3{
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            font-size: 1.5em;
+        }
+        .content .p5 h3{
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            font-size: 1.5em;
+        }
+        .assignment-section {
+            max-width: 900px;
+            margin: 2rem auto;
+            font-family: 'Inter', sans-serif;
+            color: #1f1f1f;
+        }
+
+        .assignment-table-wrapper {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+            padding: 1rem;
+        }
+
+        .assignment-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+        }
+
+        .assignment-table th {
+            text-align: left;
+            font-weight: 600;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .assignment-table td {
+            padding: 14px 16px;
+            font-size: 15px;
+            border-radius: 8px;
+            vertical-align: middle;
+            color: #222;
+        }
+
+        .assignment-table td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+        .assignment-table td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            text-align: center;
+        }
+
+        .status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .in-progress {
+            background-color: #e0edff;
+            color: #397be7;
+        }
+
+        .not-started {
+            background-color: #fdf3da;
+            color: #c48800;
+        }
+
+        .completed {
+            background-color: #d2f3e7;
+            color: #1f9e63;
+        }
+
+        .ri-eye-line {
+            font-size: 18px;
+            color: #555;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .ri-eye-line:hover {
+            transform: scale(1.1);
+        }
+        .buddies{
+            display: flex;
+            gap: 1rem;
+        }
+        .b1-b1{
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            gap: 1rem;
+            border-radius: 1rem;
+            border: 1px solid gray;
+        }
+        .student-info{
+            font-size: .8rem;
+            color: gray;
+            font-weight: 600;
+        }
+        .skills{
+            display: flex;
+            gap: .5rem;
+        }
+        .skills p{
+            font-size: .7rem;
+            background-color:#F3F4F6;
+            padding: .2rem .5rem;
+            border-radius: 1rem;
+        }
+        .b1-b1 button{
+            background-color: #fff;
+            padding: .5rem 2rem;
+            border: 1px solid gray;
+            cursor: pointer;
+            color: black;
+            font-size: .8rem;
+            font-weight: 500;
+        }
+        .b1-b1 button:hover{
+            background-color: #f0f0f0;
+            border-radius: 0rem;
+            transform: scale(1.02);
+            color: #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button{
+            cursor: pointer;
+        }
+
+        .p2 .b1:nth-child(1) .b1-p2 span i {
+            background-color: #e0edff;
+            color: #397be7;
+        }
+
+        .p2 .b1:nth-child(2) .b1-p2 span i {
+            background-color: #fdf3da;
+            color: #c48800;
+        }
+
+        .p2 .b1:nth-child(3) .b1-p2 span i {
+            background-color: #d2f3e7;
+            color: #1f9e63;
+        }
+
+        .p2 .b1:nth-child(4) .b1-p2 span i {
+            background-color: #e0edff;
+            color: #397be7;
+        }
+
+        .p2 .b1-p2 span i {
+            padding: 3px;
+            font-size: 18px;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-top: 3rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .chart-container {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 0px;
+            padding: 2rem;
+            flex: 1;
+            min-width: 300px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+            width: 100%;
+        }
+
+        .charts-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .charts-header h3 {
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .charts-section {
+                flex-direction: column;
+            }
+            .chart-container {
+                min-width: 100%;
+            }
+        }
+        
+        @import "https://unpkg.com/open-props/easings.min.css";
+
+.sun-and-moon > :is(.moon, .sun, .sun-beams) {
+  transform-origin: center;
+}
+
+.sun-and-moon > :is(.moon, .sun) {
+  fill: var(--icon-fill);
+}
+
+.theme-toggle:is(:hover, :focus-visible) > .sun-and-moon > :is(.moon, .sun) {
+  fill: var(--icon-fill-hover);
+}
+
+.sun-and-moon > .sun-beams {
+  stroke: var(--icon-fill);
+  stroke-width: 2px;
+}
+
+.theme-toggle:is(:hover, :focus-visible) .sun-and-moon > .sun-beams {
+  stroke: var(--icon-fill-hover);
+}
+
+[data-theme="dark"] .sun-and-moon > .sun {
+  transform: scale(1.75);
+}
+
+[data-theme="dark"] .sun-and-moon > .sun-beams {
+  opacity: 0;
+}
+
+[data-theme="dark"] .sun-and-moon > .moon > circle {
+  transform: translateX(-7px);
+}
+
+@supports (cx: 1) {
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    cx: 17;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sun-and-moon > .sun {
+    transition: transform .5s var(--ease-elastic-3);
+  }
+
+  .sun-and-moon > .sun-beams {
+    transition: transform .5s var(--ease-elastic-4), opacity .5s var(--ease-3);
+  }
+
+  .sun-and-moon .moon > circle {
+    transition: transform .25s var(--ease-out-5);
+  }
+
+  @supports (cx: 1) {
+    .sun-and-moon .moon > circle {
+      transition: cx .25s var(--ease-out-5);
+    }
+  }
+
+  [data-theme="dark"] .sun-and-moon > .sun {
+    transition-timing-function: var(--ease-3);
+    transition-duration: .25s;
+    transform: scale(1.75);
+  }
+
+  [data-theme="dark"] .sun-and-moon > .sun-beams {
+    transition-duration: .15s;
+    transform: rotateZ(-25deg);
+  }
+
+  [data-theme="dark"] .sun-and-moon > .moon > circle {
+    transition-duration: .5s;
+    transition-delay: .25s;
+  }
+}
+        
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="sidebar">
+            <div class="p1">
+                <h2 class="appname">Campus Buddy</h2>
+            </div>
+            <div class="p2">
+                <a href="index.html"><span><i class="ri-home-2-line"></i> Dashboard</span></a>
+                <a href="note.html"><span><i class="ri-booklet-fill"></i> Note Sharing</span></a>
+                <a href="assign.html"><span><i class="ri-calendar-todo-fill"></i> AssignmentTracker</span></a>
+                <a href="peer.html"><span><i class="ri-team-line"></i> Peer Connect</span></a>
+                <a href="mentorship.html"><span><i class="ri-graduation-cap-fill"></i> Mentorship</span></a>
+                <a href="jobs.html"><span><i class="ri-terminal-line"></i> Jobs& Internships</span></a>
+            </div>
+            
+            <div class="p3">
+                <p>@ 2025 Campus Buddy</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="p1">
+                <h3>Welcome back, Vinay Sriramoju</h3>
+            <button class="theme-toggle" id="theme-toggle" title="Toggles light & dark" aria-label="auto" aria-live="polite">
+            <svg class="sun-and-moon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+                <mask class="moon" id="moon-mask">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                <circle cx="24" cy="10" r="6" fill="black" />
+                </mask>
+                <circle class="sun" cx="12" cy="12" r="6" mask="url(#moon-mask)" fill="currentColor" />
+                <g class="sun-beams" stroke="currentColor">
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </g>
+            </svg>
+            </button>
+                <button>Create New</button>
+            </div>
+
+            <div class="p2">
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Pending Tasks</p>
+                        <h3>4</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-list-check-3"></i></span>
+                    </div>
+                </div>
+
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Notes Shared</p>
+                        <h3>12</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-book-read-line"></i></span>
+                    </div>
+                </div>
+
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Mentored Peers</p>
+                        <h3>14</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-pass-pending-line"></i></span>
+                    </div>
+                </div>
+
+                <div class="b1">
+                    <div class="b1-p1">
+                        <p>Doubts Cleared</p>
+                        <h3>40</h3>
+                    </div>
+                    <div class="b1-p2">
+                        <span><i class="ri-question-mark"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-header">
+                <h3>Analytics Overview</h3>
+            </div>
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-title">Study Activity</div>
+                    <div class="chart-wrapper">
+                        <div id="studyChart"></div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Assignment Progress</div>
+                    <div class="chart-wrapper">
+                        <div id="assignmentChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p3">
+                <div class="p3-b1">
+                    <h3>Recent Notes</h3>
+                    <a href="">View All</a>
+                </div>
+
+                <div class="notes">
+                    <div class="n1-b1">
+                        <div class="n1-b1-p1">
+                            <h4>DSA - Linked List</h4>
+                            <div class="profile">
+                                <div class="image">
+                                    <div style="width: 30px; height: 30px; background: #397be7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">V</div>
+                                </div>
+                                <p>Vinay Sriramoju</p>
+                            </div>
+                            <p>Concise pointers and visuals for Linked List implementation, traversal and common operations.</p>
+                        </div>
+                        <div class="n1-b1-p2">
+                            <p>may 15, 2025</p>
+                            <a href="">View</a>
+                        </div>
+                    </div>
+
+                    <div class="n1-b1">
+                        <div class="n1-b1-p1">
+                            <h4>Linear Algebra</h4>
+                            <div class="profile">
+                                <div class="image">
+                                    <div style="width: 30px; height: 30px; background: #1f9e63; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">A</div>
+                                </div>
+                                <p>Ankitha</p>
+                            </div>
+                            <p>Complete matrix operations with examples and practice problems for the midterm exam.</p>
+                        </div>
+                        <div class="n1-b1-p2">
+                            <p>may 15, 2025</p>
+                            <a href="">View</a>
+                        </div>
+                    </div>
+
+                    <div class="n1-b1">
+                        <div class="n1-b1-p1">
+                            <h4>Web Development</h4>
+                            <div class="profile">
+                                <div class="image">
+                                    <div style="width: 30px; height: 30px; background: #c48800; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">V</div>
+                                </div>
+                                <p>Vinay Sriramoju</p>
+                            </div>
+                            <p>React hooks explained with practical examples and best practices for state management.</p>
+                        </div>
+                        <div class="n1-b1-p2">
+                            <p>may 15, 2025</p>
+                            <a href="">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p4">
+                <div class="p4-b1">
+                    <h3>Upcoming Assignments</h3>
+                    <a href="">View All</a>
+                </div>
+
+                <div class="assignment-table-wrapper">
+                    <table class="assignment-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Assignment</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Data Structures</td>
+                                <td>Implement Binary Search Tree</td>
+                                <td>July 10, 2025</td>
+                                <td><span class="status in-progress">In Progress</span></td>
+                                <td><i class="ri-eye-line"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Algorithms</td>
+                                <td>Analysis of Sorting Algorithms</td>
+                                <td>July 15, 2025</td>
+                                <td><span class="status not-started">Not Started</span></td>
+                                <td><i class="ri-eye-line"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Web Development</td>
+                                <td>Build a React Portfolio</td>
+                                <td>July 20, 2025</td>
+                                <td><span class="status completed">Completed</span></td>
+                                <td><i class="ri-eye-line"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="p5">
+                <div class="p5-b1">
+                    <h3>Study Buddies</h3>
+                    <a href="">View All</a>
+                </div>
+                <div class="buddies">
+                    <div class="b1-b1">
+                        <div class="n1-b1-p1">
+                            <div class="profile">
+                                <div class="image">
+                                    <div style="width: 30px; height: 30px; background: #397be7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">C</div>
+                                </div>
+                                <div class="n1-b1-p1-img1">
+                                    <p>Chitti</p>
+                                    <p class="student-info">Computer Science, Senior</p>
+                                </div>
+                            </div>
+                            <div class="skills">
+                                <p>Data Structures</p>
+                                <p>Algorithms</p>
+                                <p>Python</p>
+                            </div>
+                        </div>
+                        <button>Connect</button>
+                    </div>
+                    <div class="b1-b1">
+                        <div class="n1-b1-p1">
+                            <div class="profile">
+                                <div class="image">
+                                    <div style="width: 30px; height: 30px; background: #1f9e63; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">V</div>
+                                </div>
+                                <div class="n1-b1-p1-img1">
+                                    <p>Vinay Sriramoju</p>
+                                    <p class="student-info">Computer Science, Senior</p>
+                                </div>
+                            </div>
+                            <div class="skills">
+                                <p>Data Structures</p>
+                                <p>Algorithms</p>
+                                <p>Python</p>
+                            </div>
+                        </div>
+                        <button>Connect</button>
+                    </div>
+                    <div class="b1-b1">
+                        <div class="n1-b1-p1">
+                            <div class="profile">
+                                <div class="image">
+                                    <div style="width: 30px; height: 30px; background: #c48800; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">V</div>
+                                </div>
+                                <div class="n1-b1-p1-img1">
+                                    <p>Vaishnav Oruganti</p>
+                                    <p class="student-info">Computer Science, Senior</p>
+                                </div>
+                            </div>
+                            <div class="skills">
+                                <p>Data Structures</p>
+                                <p>Algorithms</p>
+                                <p>Python</p>
+                            </div>
+                        </div>
+                        <button>Connect</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Study Activity Chart
+        const studyOptions = {
+            series: [{
+                name: 'Study Hours',
+                data: [3, 4, 2, 5, 6, 3, 4, 5, 3, 2, 4, 6]
+            }],
+            chart: {
+                type: 'line',
+                height: 300,
+                toolbar: {
+                    show: false
+                },
+                fontFamily: 'JetBrains Mono, monospace'
+            },
+            colors: ['#397be7'],
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            grid: {
+                show: true,
+                strokeDashArray: 3,
+                borderColor: '#e0e0e0'
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: {
+                    style: {
+                        colors: '#666',
+                        fontSize: '12px'
+                    }
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#666',
+                        fontSize: '12px'
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            markers: {
+                size: 5,
+                colors: ['#397be7'],
+                strokeColors: '#fff',
+                strokeWidth: 2,
+                hover: {
+                    size: 7
+                }
+            },
+            tooltip: {
+                theme: 'light',
+                style: {
+                    fontSize: '12px',
+                    fontFamily: 'JetBrains Mono, monospace'
+                }
+            }
+        };
+
+        // Assignment Progress Chart
+        const assignmentOptions = {
+            series: [{
+                name: 'Completed',
+                data: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+            }, {
+                name: 'Pending',
+                data: [3, 2, 3, 2, 1, 2, 1, 2, 1, 2, 1, 2]
+            }],
+            chart: {
+                type: 'line',
+                height: 300,
+                toolbar: {
+                    show: false
+                },
+                fontFamily: 'JetBrains Mono, monospace'
+            },
+            colors: ['#1f9e63', '#c48800'],
+            stroke: {
+                curve: 'smooth',
+                width: 3
+            },
+            grid: {
+                show: true,
+                strokeDashArray: 3,
+                borderColor: '#e0e0e0'
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: {
+                    style: {
+                        colors: '#666',
+                        fontSize: '12px'
+                    }
+                },
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                }
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#666',
+                        fontSize: '12px'
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            markers: {
+                size: 5,
+                strokeColors: '#fff',
+                strokeWidth: 2,
+                hover: {
+                    size: 7
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                fontSize: '12px',
+                fontFamily: 'JetBrains Mono, monospace',
+                markers: {
+                    width: 8,
+                    height: 8
+                }
+            },
+            tooltip: {
+                theme: 'light',
+                style: {
+                    fontSize: '12px',
+                    fontFamily: 'JetBrains Mono, monospace'
+                }
+            }
+        };
+
+        // Render charts
+        document.addEventListener('DOMContentLoaded', function() {
+            const studyChart = new ApexCharts(document.querySelector("#studyChart"), studyOptions);
+            studyChart.render();
+
+            const assignmentChart = new ApexCharts(document.querySelector("#assignmentChart"), assignmentOptions);
+            assignmentChart.render();
+        });
+        
+        const storageKey = 'theme-preference'
+
+const onClick = () => {
+  // flip current value
+  theme.value = theme.value === 'light'
+    ? 'dark'
+    : 'light'
+
+  setPreference()
+}
+
+const getColorPreference = () => {
+  if (localStorage.getItem(storageKey))
+    return localStorage.getItem(storageKey)
+  else
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light'
+}
+
+const setPreference = () => {
+  localStorage.setItem(storageKey, theme.value)
+  reflectPreference()
+}
+
+const reflectPreference = () => {
+  document.firstElementChild
+    .setAttribute('data-theme', theme.value)
+
+  document
+    .querySelector('#theme-toggle')
+    ?.setAttribute('aria-label', theme.value)
+}
+
+const theme = {
+  value: getColorPreference(),
+}
+
+// set early so no page flashes / CSS is made aware
+reflectPreference()
+
+window.onload = () => {
+  // set on load so screen readers can see latest value on the button
+  reflectPreference()
+
+  // now this script can find and listen for clicks on the control
+  document
+    .querySelector('#theme-toggle')
+    .addEventListener('click', onClick)
+}
+
+// sync with system changes
+window
+  .matchMedia('(prefers-color-scheme: dark)')
+  .addEventListener('change', ({matches:isDark}) => {
+    theme.value = isDark ? 'dark' : 'light'
+    setPreference()
+  })
+        
+    </script>
+</body>
+</html>
